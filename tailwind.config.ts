@@ -1,7 +1,7 @@
 import type { Config } from "tailwindcss"
 
-const config = {
-  darkMode: ["class"],
+const config: Config = {
+  darkMode: "class",
   content: [
     './pages/**/*.{ts,tsx}',
     './components/**/*.{ts,tsx}',
@@ -71,8 +71,7 @@ const config = {
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
-      },
-      keyframes: {
+      },      keyframes: {
         "accordion-down": {
           from: { height: "0" },
           to: { height: "var(--radix-accordion-content-height)" },
@@ -85,11 +84,32 @@ const config = {
           "0%, 100%": { opacity: "1", transform: "scale(1)" },
           "50%": { opacity: "0.85", transform: "scale(1.02)" },
         },
+        gradient: {
+          "0%, 100%": { backgroundPosition: "0% 50%" },
+          "50%": { backgroundPosition: "100% 50%" },
+        },
+        float: {
+          "0%, 100%": { transform: "translateY(0)" },
+          "50%": { transform: "translateY(-20px)" },
+        },
+        "pulse-slow": {
+          "0%, 100%": { opacity: "0.4" },
+          "50%": { opacity: "0.8" },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
         "pulse-gentle": "pulse-gentle 2.5s cubic-bezier(0.4, 0, 0.6, 1) infinite",
+        gradient: "gradient 15s ease infinite",
+        float: "float 6s ease-in-out infinite",
+        "float-delayed": "float 6s ease-in-out 2s infinite",
+        "float-slow": "float 8s ease-in-out 4s infinite",
+        "pulse-slow": "pulse-slow 4s ease-in-out infinite",
+        "pulse-slower": "pulse-slow 6s ease-in-out 2s infinite",
+      },
+      backgroundSize: {
+        "300%": "300%",
       },
     },
   },
