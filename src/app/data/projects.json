@@ -1,0 +1,62 @@
+[
+  {
+    "id": "1",
+    "name": "Website Redesign",
+    "status": "green",
+    "statusText": "On Track",
+    "schedule": "Jan 2023 - Jun 2023",
+    "budget": "$75,000 / $100,000",
+    "risk": "Low",
+    "bu": "Digital Marketing"
+  },
+  {
+    "id": "2",
+    "name": "Mobile App Development",
+    "status": "yellow",
+    "statusText": "At Risk",
+    "schedule": "Mar 2023 - Dec 2023",
+    "budget": "$120,000 / $150,000",
+    "risk": "Medium",
+    "bu": "Mobile Solutions"
+  },
+  {
+    "id": "3",
+    "name": "Data Migration",
+    "status": "red",
+    "statusText": "Delayed",
+    "schedule": "Feb 2023 - Aug 2023",
+    "budget": "$200,000 / $180,000",
+    "risk": "High",
+    "bu": "Cloud Services"
+  },
+  {
+    "id": "4",
+    "name": "CRM Implementation",
+    "status": "green",
+    "statusText": "On Track",
+    "schedule": "Apr 2023 - Oct 2023",
+    "budget": "$90,000 / $120,000",
+    "risk": "Low",
+    "bu": "Enterprise Systems"
+  },
+  {
+    "id": "5",
+    "name": "Security Audit",
+    "status": "yellow",
+    "statusText": "At Risk",
+    "schedule": "May 2023 - Jul 2023",
+    "budget": "$45,000 / $50,000",
+    "risk": "Medium",
+    "bu": "Cybersecurity"
+  },
+  {
+    "id": "6",
+    "name": "Cloud Migration",
+    "status": "green",
+    "statusText": "On Track",
+    "schedule": "Jan 2023 - Dec 2023",
+    "budget": "$350,000 / $400,000",
+    "risk": "Low",
+    "bu": "Cloud Services"
+  }
+]

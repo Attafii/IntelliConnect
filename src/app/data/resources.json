@@ -1,0 +1,54 @@
+[
+  {
+    "id": "resource-1",
+    "projectId": "1",
+    "projectName": "Website Redesign",
+    "teamSize": 8,
+    "developerCount": 4,
+    "designerCount": 2,
+    "qaCount": 2,
+    "utilizationRate": "85%",
+    "availableCapacity": "15%",
+    "topSkills": ["React", "Next.js", "Figma", "TailwindCSS"],
+    "benchStrength": 1
+  },
+  {
+    "id": "resource-2",
+    "projectId": "2",
+    "projectName": "Mobile App Development",
+    "teamSize": 12,
+    "developerCount": 7,
+    "designerCount": 3,
+    "qaCount": 2,
+    "utilizationRate": "90%",
+    "availableCapacity": "10%",
+    "topSkills": ["React Native", "Firebase", "Swift", "Kotlin"],
+    "benchStrength": 0
+  },
+  {
+    "id": "resource-3",
+    "projectId": "3",
+    "projectName": "Data Migration",
+    "teamSize": 10,
+    "developerCount": 6,
+    "designerCount": 1,
+    "qaCount": 3,
+    "utilizationRate": "75%",
+    "availableCapacity": "25%",
+    "topSkills": ["Python", "AWS", "SQL", "ETL"],
+    "benchStrength": 2
+  },
+  {
+    "id": "resource-4",
+    "projectId": "4",
+    "projectName": "CRM Implementation",
+    "teamSize": 6,
+    "developerCount": 3,
+    "designerCount": 1,
+    "qaCount": 2,
+    "utilizationRate": "95%",
+    "availableCapacity": "5%",
+    "topSkills": ["Salesforce", "Apex", "Agile"],
+    "benchStrength": 0
+  }
+]

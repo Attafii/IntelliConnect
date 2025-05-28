@@ -1,0 +1,54 @@
+[
+  {
+    "id": "finance-1",
+    "projectId": "1",
+    "projectName": "Website Redesign",
+    "totalBudget": 100000,
+    "spentBudget": 75000,
+    "remainingBudget": 25000,
+    "burnRatePerMonth": 15000,
+    "forecastedCompletionDate": "2023-06-30",
+    "revenueYoYGrowth": "15%",
+    "profitMargin": "25%",
+    "lastUpdated": "2023-05-28"
+  },
+  {
+    "id": "finance-2",
+    "projectId": "2",
+    "projectName": "Mobile App Development",
+    "totalBudget": 150000,
+    "spentBudget": 120000,
+    "remainingBudget": 30000,
+    "burnRatePerMonth": 20000,
+    "forecastedCompletionDate": "2023-12-15",
+    "revenueYoYGrowth": "22%",
+    "profitMargin": "18%",
+    "lastUpdated": "2023-05-25"
+  },
+  {
+    "id": "finance-3",
+    "projectId": "3",
+    "projectName": "Data Migration",
+    "totalBudget": 180000,
+    "spentBudget": 200000,
+    "remainingBudget": -20000,
+    "burnRatePerMonth": 25000,
+    "forecastedCompletionDate": "2023-09-15",
+    "revenueYoYGrowth": "10%",
+    "profitMargin": "12%",
+    "lastUpdated": "2023-05-29"
+  },
+  {
+    "id": "finance-4",
+    "projectId": "4",
+    "projectName": "CRM Implementation",
+    "totalBudget": 120000,
+    "spentBudget": 90000,
+    "remainingBudget": 30000,
+    "burnRatePerMonth": 18000,
+    "forecastedCompletionDate": "2023-10-30",
+    "revenueYoYGrowth": "18%",
+    "profitMargin": "20%",
+    "lastUpdated": "2023-05-27"
+  }
+]
