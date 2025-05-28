@@ -1,8 +1,9 @@
 'use client';
 
 import RouteTransition from '../components/RouteTransition';
-import RiskOpportunityGrid from '@/app/components/RiskOpportunityGrid'; // Adjusted import path
-import { RiskOpportunityItem } from '@/app/components/RiskOpportunityCard'; // Adjusted import path
+import RiskOpportunityGrid from '@/app/components/RiskOpportunityGrid';
+import { RiskOpportunityItem } from '@/app/components/RiskOpportunityCard';
+import { motion } from 'framer-motion';
 
 const sampleRiskOpportunityData: RiskOpportunityItem[] = [
   {
@@ -50,18 +51,106 @@ const sampleRiskOpportunityData: RiskOpportunityItem[] = [
 ];
 
 const RisksPage = () => {
+  const riskMetrics = {
+    totalRisks: sampleRiskOpportunityData.reduce((acc, item) => acc + item.riskCount, 0),
+    totalOpportunities: sampleRiskOpportunityData.reduce((acc, item) => acc + item.opportunityCount, 0),
+    atRiskProjects: sampleRiskOpportunityData.filter(item => item.mitigationStatus === 'At Risk').length,
+    completedMitigations: sampleRiskOpportunityData.filter(item => item.mitigationStatus === 'Completed').length,
+  };
+
   return (
     <RouteTransition>
-      <div className="p-4 md:p-8 min-h-screen bg-gradient-to-br from-slate-900 to-slate-800 text-white">
-        <header className="mb-8 md:mb-10">
-          <h1 className="text-3xl sm:text-4xl font-bold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-red-400 via-orange-400 to-yellow-500">
-            Risk & Opportunity Dashboard
+      <div className="p-4 md:p-8 min-h-screen relative">
+        {/* Blurred background overlay */}
+        <div className="absolute inset-0 backdrop-blur-xl bg-white/30 -z-10"></div>
+
+        <motion.header 
+          className="mb-8 md:mb-10"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+        >
+          <h1 className="text-4xl sm:text-5xl font-bold tracking-tight text-blue-800 mb-4">
+            Risk & Opportunity Management
           </h1>
-          <p className="mt-2 sm:mt-3 text-base sm:text-lg text-slate-400 max-w-2xl">
-            Overview of project risks and opportunities with current mitigation statuses.
+          <p className="text-lg sm:text-xl text-gray-700 max-w-3xl">
+            Comprehensive overview of project risks and opportunities with real-time mitigation tracking and analysis.
           </p>
-        </header>
-        <RiskOpportunityGrid items={sampleRiskOpportunityData} />
+        </motion.header>
+
+        {/* Quick Stats Section */}
+        <motion.div 
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.2 }}
+        >
+          <div className="bg-white/80 backdrop-blur-lg p-6 rounded-xl shadow-lg transition-transform hover:scale-105">
+            <h3 className="text-sm font-semibold text-red-600 mb-2">Active Risks</h3>
+            <p className="text-3xl font-bold text-gray-800">{riskMetrics.totalRisks}</p>
+            <p className="text-sm text-gray-600 mt-2">Across all projects</p>
+          </div>
+          <div className="bg-white/80 backdrop-blur-lg p-6 rounded-xl shadow-lg transition-transform hover:scale-105">
+            <h3 className="text-sm font-semibold text-green-600 mb-2">Opportunities</h3>
+            <p className="text-3xl font-bold text-gray-800">{riskMetrics.totalOpportunities}</p>
+            <p className="text-sm text-gray-600 mt-2">Growth potential identified</p>
+          </div>
+          <div className="bg-white/80 backdrop-blur-lg p-6 rounded-xl shadow-lg transition-transform hover:scale-105">
+            <h3 className="text-sm font-semibold text-amber-600 mb-2">At Risk Projects</h3>
+            <p className="text-3xl font-bold text-gray-800">{riskMetrics.atRiskProjects}</p>
+            <p className="text-sm text-gray-600 mt-2">Requiring immediate attention</p>
+          </div>
+          <div className="bg-white/80 backdrop-blur-lg p-6 rounded-xl shadow-lg transition-transform hover:scale-105">
+            <h3 className="text-sm font-semibold text-blue-600 mb-2">Mitigations Complete</h3>
+            <p className="text-3xl font-bold text-gray-800">{riskMetrics.completedMitigations}</p>
+            <p className="text-sm text-gray-600 mt-2">Successfully addressed</p>
+          </div>
+        </motion.div>
+
+        {/* Risk Status Summary */}
+        <motion.div 
+          className="bg-white/80 backdrop-blur-lg p-6 rounded-xl shadow-lg mb-8"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.4 }}
+        >
+          <h2 className="text-xl font-semibold mb-6 text-blue-800">Risk Status Distribution</h2>
+          <div className="flex items-center gap-4 mb-6">
+            <div className="flex-1 h-4 bg-gray-200 rounded-full overflow-hidden">
+              <div className="flex h-full">
+                <div className="bg-green-500 h-full" style={{ width: '40%' }}></div>
+                <div className="bg-amber-500 h-full" style={{ width: '35%' }}></div>
+                <div className="bg-red-500 h-full" style={{ width: '25%' }}></div>
+              </div>
+            </div>
+            <div className="flex gap-4 text-sm">
+              <span className="flex items-center gap-2">
+                <span className="w-3 h-3 bg-green-500 rounded-full"></span>
+                <span className="text-gray-700">On Track</span>
+              </span>
+              <span className="flex items-center gap-2">
+                <span className="w-3 h-3 bg-amber-500 rounded-full"></span>
+                <span className="text-gray-700">Needs Attention</span>
+              </span>
+              <span className="flex items-center gap-2">
+                <span className="w-3 h-3 bg-red-500 rounded-full"></span>
+                <span className="text-gray-700">At Risk</span>
+              </span>
+            </div>
+          </div>
+        </motion.div>
+
+        {/* Risk & Opportunity Grid */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.6 }}
+        >
+          <h2 className="text-xl font-semibold mb-6 text-blue-800">Project Risk Analysis</h2>
+          <div className="bg-white/80 backdrop-blur-lg rounded-xl shadow-lg">
+            <RiskOpportunityGrid items={sampleRiskOpportunityData} />
+          </div>
+        </motion.div>
       </div>
     </RouteTransition>
   );

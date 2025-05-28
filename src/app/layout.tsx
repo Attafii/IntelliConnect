@@ -18,6 +18,9 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "IntelliConnect - Modern Dashboard",
   description: "A modern dashboard with glassmorphism UI and smooth animations",
+  icons: {
+    icon: '/intlogo.png'
+  }
 };
 
 export default function RootLayout({
@@ -28,7 +31,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 min-h-screen`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-gradient-to-b from-blue-500 to-white min-h-screen`}
       >
         <Sidebar />
         <Navbar />
