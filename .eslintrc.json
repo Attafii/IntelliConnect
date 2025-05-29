@@ -1,6 +1,3 @@
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
 {
   "extends": "next/core-web-vitals",
   "rules": {
@@ -10,18 +7,3 @@
     "react/no-unescaped-entities": "warn"
   }
 }
-=======
->>>>>>> 21c5801628fea5d2514e6c70695173ad684f56e1
-{
-  "extends": "next/core-web-vitals",
-  "rules": {
-    "@typescript-eslint/no-unused-vars": "warn",
-    "@typescript-eslint/no-explicit-any": "warn",
-    "react-hooks/exhaustive-deps": "warn",
-    "react/no-unescaped-entities": "warn"
-  }
-}
-<<<<<<< HEAD
-=======
->>>>>>> baf16a2 (added new feature and redesigned the app)
->>>>>>> 21c5801628fea5d2514e6c70695173ad684f56e1
