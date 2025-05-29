@@ -1,7 +1,12 @@
 'use client';
 
+import { useState } from 'react';
 import RouteTransition from '../components/RouteTransition';
-import { PlusCircleIcon, PencilSquareIcon, TrashIcon, CheckCircleIcon, ArrowPathIcon } from '@heroicons/react/24/outline';
+import { motion } from 'framer-motion';
+import { 
+  PlusCircleIcon, PencilSquareIcon, TrashIcon, CheckCircleIcon, ArrowPathIcon,
+  ExclamationCircleIcon, ClockIcon, UserGroupIcon, DocumentCheckIcon
+} from '@heroicons/react/24/outline';
 
 const actionItems = [
   {
@@ -53,38 +58,178 @@ const actionItems = [
 
 const getStatusColor = (status: string) => {
   switch (status) {
-    case 'Completed': return 'text-green-400 bg-green-500/10 border-green-500/30';
-    case 'In Progress': return 'text-blue-400 bg-blue-500/10 border-blue-500/30';
-    case 'Pending': return 'text-yellow-400 bg-yellow-500/10 border-yellow-500/30';
-    default: return 'text-gray-400 bg-gray-500/10 border-gray-500/30';
+    case 'Completed': return 'text-green-600';
+    case 'In Progress': return 'text-blue-600';
+    case 'Pending': return 'text-amber-600';
+    default: return 'text-gray-600';
   }
 };
 
 const getPriorityColor = (priority: string) => {
   switch (priority) {
-    case 'High': return 'text-red-400';
-    case 'Medium': return 'text-orange-400';
-    case 'Low': return 'text-sky-400';
-    default: return 'text-gray-400';
+    case 'High': return 'text-red-600';
+    case 'Medium': return 'text-orange-600';
+    case 'Low': return 'text-blue-600';
+    default: return 'text-gray-600';
+  }
+};
+
+const getPriorityBadgeColor = (priority: string) => {
+  switch (priority) {
+    case 'High': return 'bg-red-100 text-red-800';
+    case 'Medium': return 'bg-orange-100 text-orange-800';
+    case 'Low': return 'bg-blue-100 text-blue-800';
+    default: return 'bg-gray-100 text-gray-800';
   }
 };
 
 const ActionsPage = () => {
+  const [selectedStatus, setSelectedStatus] = useState<string | null>(null);
+  const [selectedPriority, setSelectedPriority] = useState<string | null>(null);
+
+  const metrics = {
+    total: actionItems.length,
+    completed: actionItems.filter(item => item.status === 'Completed').length,
+    inProgress: actionItems.filter(item => item.status === 'In Progress').length,
+    pending: actionItems.filter(item => item.status === 'Pending').length,
+    highPriority: actionItems.filter(item => item.priority === 'High').length,
+  };
+
+  const filteredActions = actionItems.filter(item => {
+    if (selectedStatus && item.status !== selectedStatus) return false;
+    if (selectedPriority && item.priority !== selectedPriority) return false;
+    return true;
+  });
+
   return (
     <RouteTransition>
-      <div className="p-4 md:p-8 min-h-screen bg-gradient-to-br from-slate-900 to-slate-800 text-white">
-        <div className="flex justify-between items-center mb-8">
-          <h1 className="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-red-400 to-orange-600">
-            Action Items
-          </h1>
-          <button className="bg-gradient-to-r from-red-500 to-orange-500 hover:from-red-600 hover:to-orange-600 text-white font-semibold py-2 px-4 rounded-lg shadow-md hover:shadow-lg transition-all duration-300 flex items-center">
-            <PlusCircleIcon className="h-5 w-5 mr-2" /> New Action
-          </button>
-        </div>
+      <div className="p-4 md:p-8 min-h-screen relative">
+        {/* Blurred background overlay */}
+        <div className="absolute inset-0 backdrop-blur-xl bg-white/30 -z-10"></div>
 
-        <div className="bg-white/5 backdrop-blur-md rounded-xl shadow-xl border border-white/10 overflow-hidden">
-          <table className="w-full text-sm text-left text-gray-300">
-            <thead className="text-xs text-gray-400 uppercase bg-white/5">
+        <motion.header 
+          className="mb-8 md:mb-10"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+        >
+          <div className="flex justify-between items-center mb-4">
+            <h1 className="text-4xl sm:text-5xl font-bold tracking-tight text-blue-800">
+              Action Items
+            </h1>
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg 
+                shadow-lg transition-colors duration-300 flex items-center gap-2"
+            >
+              <PlusCircleIcon className="h-5 w-5" />
+              New Action
+            </motion.button>
+          </div>
+          <p className="text-lg sm:text-xl text-gray-700 max-w-3xl">
+            Track and manage action items across all projects and teams.
+          </p>
+        </motion.header>
+
+        {/* Quick Stats Section */}
+        <motion.div 
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.2 }}
+        >
+          <div 
+            className="bg-white/80 backdrop-blur-lg p-6 rounded-xl shadow-lg transition-transform hover:scale-105 cursor-pointer"
+            onClick={() => setSelectedStatus(selectedStatus === 'Completed' ? null : 'Completed')}
+          >
+            <div className="flex items-center justify-between">
+              <h3 className="text-sm font-semibold text-green-600 mb-2">Completed</h3>
+              <CheckCircleIcon className="h-5 w-5 text-green-600" />
+            </div>
+            <p className="text-3xl font-bold text-gray-800">{metrics.completed}</p>
+            <p className="text-sm text-gray-600 mt-2">Done</p>
+          </div>
+
+          <div 
+            className="bg-white/80 backdrop-blur-lg p-6 rounded-xl shadow-lg transition-transform hover:scale-105 cursor-pointer"
+            onClick={() => setSelectedStatus(selectedStatus === 'In Progress' ? null : 'In Progress')}
+          >
+            <div className="flex items-center justify-between">
+              <h3 className="text-sm font-semibold text-blue-600 mb-2">In Progress</h3>
+              <ClockIcon className="h-5 w-5 text-blue-600" />
+            </div>
+            <p className="text-3xl font-bold text-gray-800">{metrics.inProgress}</p>
+            <p className="text-sm text-gray-600 mt-2">Active</p>
+          </div>
+
+          <div 
+            className="bg-white/80 backdrop-blur-lg p-6 rounded-xl shadow-lg transition-transform hover:scale-105 cursor-pointer"
+            onClick={() => setSelectedStatus(selectedStatus === 'Pending' ? null : 'Pending')}
+          >
+            <div className="flex items-center justify-between">
+              <h3 className="text-sm font-semibold text-amber-600 mb-2">Pending</h3>
+              <ArrowPathIcon className="h-5 w-5 text-amber-600" />
+            </div>
+            <p className="text-3xl font-bold text-gray-800">{metrics.pending}</p>
+            <p className="text-sm text-gray-600 mt-2">Awaiting action</p>
+          </div>
+
+          <div 
+            className="bg-white/80 backdrop-blur-lg p-6 rounded-xl shadow-lg transition-transform hover:scale-105 cursor-pointer"
+            onClick={() => setSelectedPriority(selectedPriority === 'High' ? null : 'High')}
+          >
+            <div className="flex items-center justify-between">
+              <h3 className="text-sm font-semibold text-red-600 mb-2">High Priority</h3>
+              <ExclamationCircleIcon className="h-5 w-5 text-red-600" />
+            </div>
+            <p className="text-3xl font-bold text-gray-800">{metrics.highPriority}</p>
+            <p className="text-sm text-gray-600 mt-2">Urgent tasks</p>
+          </div>
+        </motion.div>
+
+        {/* Filters */}
+        {(selectedStatus || selectedPriority) && (
+          <motion.div 
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="mb-6 flex items-center gap-4"
+          >
+            <span className="text-gray-600">Active filters:</span>
+            {selectedStatus && (
+              <span className="px-3 py-1 rounded-full bg-blue-100 text-blue-800 text-sm font-medium flex items-center gap-2">
+                {selectedStatus}
+                <button 
+                  onClick={() => setSelectedStatus(null)}
+                  className="hover:text-blue-600"
+                >
+                  ×
+                </button>
+              </span>
+            )}
+            {selectedPriority && (
+              <span className="px-3 py-1 rounded-full bg-red-100 text-red-800 text-sm font-medium flex items-center gap-2">
+                {selectedPriority} Priority
+                <button 
+                  onClick={() => setSelectedPriority(null)}
+                  className="hover:text-red-600"
+                >
+                  ×
+                </button>
+              </span>
+            )}
+          </motion.div>
+        )}
+
+        {/* Action Items Table */}
+        <motion.div
+          className="bg-white/80 backdrop-blur-lg rounded-xl shadow-lg overflow-hidden"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.3 }}
+        >
+          <table className="w-full text-sm text-left">
+            <thead className="text-xs text-gray-700 uppercase bg-gray-50/50">
               <tr>
                 <th scope="col" className="px-6 py-3">Title</th>
                 <th scope="col" className="px-6 py-3">Assigned To</th>
@@ -96,30 +241,43 @@ const ActionsPage = () => {
               </tr>
             </thead>
             <tbody>
-              {actionItems.map((item) => (
-                <tr key={item.id} className="border-b border-white/10 hover:bg-white/10 transition-colors duration-150">
-                  <td className="px-6 py-4 font-medium text-gray-100 whitespace-nowrap">{item.title}</td>
-                  <td className="px-6 py-4">{item.assignedTo}</td>
-                  <td className="px-6 py-4">{item.dueDate}</td>
-                  <td className={`px-6 py-4 font-medium ${getPriorityColor(item.priority)}`}>{item.priority}</td>
+              {filteredActions.map((item) => (
+                <motion.tr 
+                  key={item.id} 
+                  className="border-b border-gray-200 hover:bg-gray-50/50 transition-colors duration-150"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ duration: 0.3 }}
+                >
+                  <td className="px-6 py-4 font-medium text-gray-900">{item.title}</td>
+                  <td className="px-6 py-4 text-gray-700">{item.assignedTo}</td>
+                  <td className="px-6 py-4 text-gray-700">{item.dueDate}</td>
                   <td className="px-6 py-4">
-                    <span className={`px-2 py-1 text-xs font-medium rounded-full ${getStatusColor(item.status)}`}>
+                    <span className={`px-2 py-1 rounded-full text-xs font-medium ${getPriorityBadgeColor(item.priority)}`}>
+                      {item.priority}
+                    </span>
+                  </td>
+                  <td className="px-6 py-4">
+                    <span className={`font-medium ${getStatusColor(item.status)}`}>
                       {item.status}
                     </span>
                   </td>
-                  <td className="px-6 py-4">{item.project}</td>
-                  <td className="px-6 py-4 text-right space-x-2 whitespace-nowrap">
-                    <button title="Edit" className="text-blue-400 hover:text-blue-300"><PencilSquareIcon className="h-5 w-5" /></button>
-                    <button title={item.status === 'Completed' ? 'Reopen' : 'Mark Complete'} className={`${item.status === 'Completed' ? 'text-yellow-400 hover:text-yellow-300' : 'text-green-400 hover:text-green-300'}`}>
-                      {item.status === 'Completed' ? <ArrowPathIcon className="h-5 w-5" /> : <CheckCircleIcon className="h-5 w-5" />}
-                    </button>
-                    <button title="Delete" className="text-red-400 hover:text-red-300"><TrashIcon className="h-5 w-5" /></button>
+                  <td className="px-6 py-4 text-gray-700">{item.project}</td>
+                  <td className="px-6 py-4">
+                    <div className="flex items-center gap-3">
+                      <button className="text-blue-600 hover:text-blue-800">
+                        <PencilSquareIcon className="h-5 w-5" />
+                      </button>
+                      <button className="text-red-600 hover:text-red-800">
+                        <TrashIcon className="h-5 w-5" />
+                      </button>
+                    </div>
                   </td>
-                </tr>
+                </motion.tr>
               ))}
             </tbody>
           </table>
-        </div>
+        </motion.div>
       </div>
     </RouteTransition>
   );

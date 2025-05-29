@@ -1,38 +1,51 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { aiService } from '@/lib/aiService';
 
 export async function POST(request: NextRequest) {
+  let requestMessage = '';
+  let requestContext = undefined;
+
   try {
     const body = await request.json();
     const { message, context } = body;
+    requestMessage = message;
+    requestContext = context;
+    
+    console.log('Received request:', { message, context });
 
     if (!message) {
       return NextResponse.json({ error: 'No message provided.' }, { status: 400 });
     }
 
-    // In a real application, you would use the 'message' and 'context' (uploaded file data summary)
-    // to query a GenAI model or a knowledge base.
-    console.log('Chat API received message:', message);
-    console.log('Chat API received context:', context ? 'Context provided' : 'No context provided');
+    try {
+      console.log('Calling AI service...');
+      const response = await aiService.sendChatMessage(message, context);
+      console.log('AI service response:', response);
+      
+      if (!response.reply) {
+        throw new Error('No reply received from AI service');
+      }
 
-    // For now, return a mock response based on the message
-    let replyText = "I'm a placeholder AI. I received your message.";
-    if (typeof message === 'string') {
-        if (message.toLowerCase().includes('risk')) {
-            replyText = "Based on the (mock) data, potential risks include integration delays and budget overruns.";
-        } else if (message.toLowerCase().includes('timeline')) {
-            replyText = "The project timeline is (mocked as) Q1 2025 - Q4 2025, with key milestones like Phase 1 Delivery.";
-        } else if (message.toLowerCase().includes('budget')) {
-            replyText = "Budget details are currently N/A in this mock response, pending full analysis.";
-        } else {
-            replyText = `I received your question: "${message}". I am still under development to provide detailed answers.`;
-        }
+      return NextResponse.json(response, { status: 200 });
+    } catch (aiError) {
+      console.error('AI service error:', aiError);
+      
+      // Return a test response for now to check if the communication works
+      return NextResponse.json({
+        reply: `I received your message: "${message}". This is a test response while we debug the AI service connection.`,
+        suggestions: ['Tell me about the project', 'Show financial data', 'List resources']
+      }, { status: 200 });
     }
-
-
-    return NextResponse.json({ reply: replyText }, { status: 200 });
 
   } catch (error) {
     console.error('Chat API error:', error);
-    return NextResponse.json({ error: 'Failed to process chat message.', details: error instanceof Error ? error.message : 'Unknown error' }, { status: 500 });
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+    console.error('Detailed error:', errorMessage);
+    
+    return NextResponse.json({ 
+      error: 'Failed to process chat message.', 
+      details: errorMessage,
+      requestData: { message: requestMessage, context: requestContext }
+    }, { status: 500 });
   }
 }

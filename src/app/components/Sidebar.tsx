@@ -32,10 +32,9 @@ const navigation: NavItem[] = [
   { name: 'Financials', href: '/financials', icon: BanknotesIcon },
   { name: 'Risks', href: '/risks', icon: ShieldExclamationIcon },
   { name: 'Resources', href: '/resources', icon: UsersIcon },
-  { name: 'Milestones', href: '/milestones', icon: CalendarDaysIcon },
-  { name: 'KPIs', href: '/kpis', icon: ChartBarIcon },
+  { name: 'Milestones', href: '/milestones', icon: CalendarDaysIcon },  { name: 'KPIs', href: '/kpis', icon: ChartBarIcon },
   { name: 'Actions', href: '/actions', icon: ClipboardDocumentCheckIcon },
-  { name: 'Intelligence', href: '/intelligence', icon: Lightbulb as any }, // Using 'as any' because Lightbulb is from lucide-react
+  { name: 'Analytics & Insights', href: '/analytics-insights', icon: Lightbulb as any }, // Using 'as any' because Lightbulb is from lucide-react
 ];
 
 export default function Sidebar() {

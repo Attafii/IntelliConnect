@@ -1,8 +1,31 @@
 'use client';
 
+import { useState } from 'react';
 import RouteTransition from '../components/RouteTransition';
-import KPIComparisonTable, { KPI } from '../components/KPIComparisonTable';
-import { ArrowTrendingUpIcon, UserGroupIcon, CurrencyDollarIcon, ChatBubbleLeftRightIcon, LightBulbIcon, ShieldCheckIcon } from '@heroicons/react/24/outline';
+import KPIComparisonTable from '../components/KPIComparisonTable';
+import { motion } from 'framer-motion';
+import { ArrowTrendingUpIcon, UserGroupIcon, CurrencyDollarIcon, ChatBubbleLeftRightIcon, 
+         LightBulbIcon, ShieldCheckIcon, ChartBarIcon, ArrowPathIcon } from '@heroicons/react/24/outline';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+
+type KPIName = 'Monthly Active Users (MAU)' | 'Customer Churn Rate' | 'Average Revenue Per User (ARPU)' | 'Net Promoter Score (NPS)' | 'Feature Adoption Rate' | 'System Uptime';
+
+// Mock historical data for each KPI
+const historicalData: Record<KPIName, number[]> = {
+  'Monthly Active Users (MAU)': [12000, 13500, 14200, 14800, 15230],
+  'Customer Churn Rate': [3.2, 3.0, 2.8, 2.6, 2.5],
+  'Average Revenue Per User (ARPU)': [40.2, 42.1, 43.5, 44.8, 45.5],
+  'Net Promoter Score (NPS)': [48, 50, 52, 54, 55],
+  'Feature Adoption Rate': [55, 58, 60, 63, 65],
+  'System Uptime': [99.95, 99.96, 99.97, 99.97, 99.98]
+};
+
+const heatmapData = [
+  { label: 'Revenue Growth', value: 23.5 },
+  { label: 'Customer Growth', value: 15.8 },
+  { label: 'Feature Usage', value: 42.3 },
+  { label: 'Support Tickets', value: 127 }
+];
 
 const kpiCards = [
   {
@@ -159,47 +182,193 @@ const kpiTableData: KPI[] = [
   }
 ];
 
+// Historical data for trend analysis
+const historicalKPIData = Array.from({ length: 12 }, (_, i) => ({
+  month: new Date(2025, i, 1).toLocaleDateString('en-US', { month: 'short' }),
+  mau: Math.floor(12000 + (Math.random() * 5000)),
+  churn: (1.5 + (Math.random() * 2)).toFixed(1),
+  arpu: (40 + (Math.random() * 15)).toFixed(2),
+  nps: Math.floor(45 + (Math.random() * 20))
+}));
+
 const KPIsPage = () => {
+  const [selectedKPI, setSelectedKPI] = useState<KPIName | null>(null);
+  const [selectedPeriod, setSelectedPeriod] = useState('month');
+
+  const overallHealth = {
+    performance: 85, // Example percentage
+    improvement: '+12%',
+    trend: 'up'
+  };
+
   return (
     <RouteTransition>
-      <div className="p-4 md:p-8 min-h-screen bg-background text-foreground">
-        <h1 className="text-3xl font-bold mb-8 text-foreground">
-          Key Performance Indicators
-        </h1>
-        
-        {/* KPI Cards Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-10">
-          {kpiCards.map((kpi, index) => (
-            <div 
-              key={index} 
-              className="p-6 rounded-xl shadow-md bg-card border border-border hover:shadow-lg hover:border-primary/20 transition-all duration-300"
-            >
-              <div className="flex items-center justify-between mb-3">
-                <h2 className="text-lg font-semibold text-foreground">{kpi.name}</h2>
-                <kpi.icon className={`h-7 w-7 text-primary ${kpi.iconTransform || ''}`} />
-              </div>
-              <p className="text-3xl font-bold text-foreground">{kpi.value}</p>
-              <p className="text-sm text-muted-foreground mb-3">Target: {kpi.target}</p>
-              <div className="w-full bg-muted rounded-full h-2.5 mb-2">
-                <div 
-                  className={`h-2.5 rounded-full ${kpi.trend === 'up' ? 'bg-primary' : 'bg-destructive'}`}
-                  style={{ width: `${kpi.progress}%` }}
-                ></div>
-              </div>
-              <div className={`text-sm font-medium ${kpi.trend === 'up' ? 'text-cap-accent-green' : 'text-destructive'}`}>
-                {kpi.change} {kpi.trend === 'up' ? '▲' : '▼'} vs last period
+      <div className="p-4 md:p-8 min-h-screen relative">
+        {/* Blurred background overlay */}
+        <div className="absolute inset-0 backdrop-blur-xl bg-white/30 -z-10"></div>
+
+        <motion.header 
+          className="mb-8 md:mb-10"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+        >
+          <h1 className="text-4xl sm:text-5xl font-bold tracking-tight text-blue-800 mb-4">
+            Key Performance Indicators
+          </h1>
+          <p className="text-lg sm:text-xl text-gray-700 max-w-3xl">
+            Monitor and analyze critical business metrics to drive informed decision-making.
+          </p>
+        </motion.header>
+
+        {/* Overall Health Card */}
+        <motion.div
+          className="mb-8 bg-white/80 backdrop-blur-lg rounded-xl shadow-lg p-6"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.2 }}
+        >
+          <div className="flex items-start justify-between">
+            <div>
+              <h2 className="text-xl font-semibold text-gray-800 mb-2">Overall KPI Health</h2>
+              <div className="flex items-center gap-2">
+                <span className="text-3xl font-bold text-gray-900">{overallHealth.performance}%</span>
+                <span className={`text-sm font-medium ${overallHealth.trend === 'up' ? 'text-green-600' : 'text-red-600'}`}>
+                  {overallHealth.improvement}
+                </span>
               </div>
             </div>
+            <div className="flex gap-2">
+              {['week', 'month', 'quarter', 'year'].map((period) => (
+                <button
+                  key={period}
+                  onClick={() => setSelectedPeriod(period)}
+                  className={`px-3 py-1 rounded-full text-sm font-medium transition-all
+                    ${selectedPeriod === period 
+                      ? 'bg-blue-100 text-blue-800' 
+                      : 'text-gray-600 hover:bg-gray-100'}`}
+                >
+                  {period.charAt(0).toUpperCase() + period.slice(1)}
+                </button>
+              ))}
+            </div>
+          </div>
+        </motion.div>
+
+        {/* KPI Cards Grid */}
+        <motion.div 
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-8"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.3 }}
+        >
+          {kpiCards.map((kpi, index) => (
+            <motion.div
+              key={index}
+              className={`bg-white/80 backdrop-blur-lg p-6 rounded-xl shadow-lg transition-all duration-300 
+                cursor-pointer ${selectedKPI === kpi.name ? 'ring-2 ring-blue-500' : 'hover:shadow-xl'}`}
+              onClick={() => setSelectedKPI(selectedKPI === kpi.name ? null : kpi.name as KPIName)}
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+            >
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-lg font-semibold text-gray-800">{kpi.name}</h3>
+                <kpi.icon className={`h-6 w-6 ${kpi.color}`} />
+              </div>
+              <div className="mb-4">
+                <div className="text-3xl font-bold text-gray-900">{kpi.value}</div>
+                <div className="text-sm text-gray-600">Target: {kpi.target}</div>
+              </div>
+              <div className="space-y-2">
+                <div className="flex justify-between text-sm">
+                  <span className="text-gray-600">Progress</span>
+                  <span className="font-medium text-gray-900">{kpi.progress.toFixed(1)}%</span>
+                </div>
+                <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
+                  <motion.div
+                    className={`h-full rounded-full ${
+                      kpi.progress >= 90 ? 'bg-green-500' :
+                      kpi.progress >= 70 ? 'bg-blue-500' :
+                      kpi.progress >= 50 ? 'bg-yellow-500' : 'bg-red-500'
+                    }`}
+                    initial={{ width: 0 }}
+                    animate={{ width: `${kpi.progress}%` }}
+                    transition={{ duration: 1 }}
+                  />
+                </div>
+                <div className={`text-sm flex items-center gap-1 
+                  ${kpi.trend === 'up' ? 'text-green-600' : 'text-red-600'}`}
+                >
+                  {kpi.trend === 'up' ? '↑' : '↓'} {kpi.change} vs last period
+                </div>
+              </div>
+            </motion.div>
           ))}
-        </div>
-        
-        {/* KPI Comparison Table */}
-        <div className="mb-10">
+        </motion.div>
+
+        {/* Trend Chart */}
+        <motion.div
+          className="mb-8 bg-white/80 backdrop-blur-lg rounded-xl shadow-lg p-6"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.4 }}
+        >
+          <h2 className="text-xl font-semibold text-gray-800 mb-6">Historical Performance</h2>
+          <div className="h-[400px]">
+            <ResponsiveContainer width="100%" height="100%">
+              <LineChart data={historicalKPIData}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
+                <XAxis dataKey="month" stroke="#6b7280" />
+                <YAxis stroke="#6b7280" />
+                <Tooltip 
+                  contentStyle={{
+                    backgroundColor: 'rgba(255, 255, 255, 0.95)',
+                    border: 'none',
+                    borderRadius: '8px',
+                    boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
+                  }}
+                />
+                <Line 
+                  type="monotone" 
+                  dataKey="mau" 
+                  name="Monthly Active Users"
+                  stroke="#3b82f6" 
+                  strokeWidth={2}
+                  dot={false}
+                />
+                <Line 
+                  type="monotone" 
+                  dataKey="arpu" 
+                  name="ARPU"
+                  stroke="#10b981" 
+                  strokeWidth={2}
+                  dot={false}
+                />
+                <Line 
+                  type="monotone" 
+                  dataKey="nps" 
+                  name="NPS"
+                  stroke="#8b5cf6" 
+                  strokeWidth={2}
+                  dot={false}
+                />
+              </LineChart>
+            </ResponsiveContainer>
+          </div>
+        </motion.div>
+
+        {/* KPI Table */}
+        <motion.div
+          className="bg-white/80 backdrop-blur-lg rounded-xl shadow-lg p-6"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.5 }}
+        >
           <KPIComparisonTable 
             kpis={kpiTableData} 
-            title="KPI Performance Analysis"
+            title="Detailed KPI Analysis" 
           />
-        </div>
+        </motion.div>
       </div>
     </RouteTransition>
   );

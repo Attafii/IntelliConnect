@@ -1,15 +1,23 @@
 'use client';
 
 import { useState, useMemo, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import RouteTransition from '../components/RouteTransition';
-import ProjectGrid, { Project } from '../components/ProjectGrid'; // Import Project type
+import ProjectGrid, { Project } from '../components/ProjectGrid';
 import ProjectFilters, { FilterValues } from '../components/ProjectFilters';
 import RoleSwitcher, { UserRole } from '../components/RoleSwitcher';
 import ActionItemList from '../components/ActionItemList';
 import { ActionItem } from '../components/ActionItemCard';
-import PredictionsPanel from '../components/PredictionsPanel'; // Added import
-
-// Removed hardcoded initialProjects, will be fetched from API
+import PredictionsPanel from '../components/PredictionsPanel';
+import {
+  HomeIcon,
+  ChartBarSquareIcon,
+  ClipboardDocumentCheckIcon,
+  ArrowTrendingUpIcon,
+  ExclamationTriangleIcon,
+  CheckCircleIcon,
+  ClockIcon
+} from '@heroicons/react/24/outline';
 
 // Sample action items data
 const sampleActionItems: ActionItem[] = [
@@ -56,6 +64,7 @@ export default function OverviewPage() {
   const [projects, setProjects] = useState<Project[]>([]);
   const [isLoadingProjects, setIsLoadingProjects] = useState(true);
   const [errorProjects, setErrorProjects] = useState<string | null>(null);
+  const [selectedMetric, setSelectedMetric] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchProjects = async () => {
@@ -93,7 +102,7 @@ export default function OverviewPage() {
     ['All Risks', ...Array.from(new Set(projects.map(p => p.risk))).sort()], 
   [projects]);
   const uniqueBUs = useMemo(() => 
-    ['All BUs', ...Array.from(new Set(projects.map(p => p.bu).filter(Boolean) as string[])) .sort()],
+    ['All BUs', ...Array.from(new Set(projects.map(p => p.bu).filter(Boolean) as string[])).sort()],
   [projects]);
 
   const filteredProjects = useMemo(() => {
@@ -105,29 +114,160 @@ export default function OverviewPage() {
     });
   }, [filters, projects]);
 
+  const metrics = useMemo(() => [
+    {
+      title: 'Total Projects',
+      value: filteredProjects.length,
+      change: '+2',
+      icon: ChartBarSquareIcon,
+      color: 'blue'
+    },
+    {
+      title: 'Completed',
+      value: filteredProjects.filter(p => p.statusText === 'Completed').length,
+      change: '+1',
+      icon: CheckCircleIcon,
+      color: 'green'
+    },
+    {
+      title: 'In Progress',
+      value: filteredProjects.filter(p => p.statusText === 'In Progress').length,
+      change: '0',
+      icon: ClockIcon,
+      color: 'yellow'
+    },
+    {
+      title: 'High Risk',
+      value: filteredProjects.filter(p => p.risk === 'High').length,
+      change: '-1',
+      icon: ExclamationTriangleIcon,
+      color: 'red'
+    }
+  ], [filteredProjects]);
+
   return (
     <RouteTransition>
-      <div className="bg-background/30 backdrop-blur-md rounded-xl p-6 border border-border/50 shadow-xl">
-        <h1 className="text-3xl font-bold text-foreground mb-6">Project Dashboard</h1>
-        
-        <RoleSwitcher currentRole={currentRole} onRoleChange={handleRoleChange} />
-        <ProjectFilters 
-          filters={filters} 
-          onFilterChange={handleFilterChange} 
-          uniqueStatuses={uniqueStatuses.slice(1)} // Remove 'All Statuses' for the dropdown items
-          uniqueRisks={uniqueRisks.slice(1)}     // Remove 'All Risks'
-          uniqueBUs={uniqueBUs.slice(1)}         // Remove 'All BUs'
-        />
-        
-        {errorProjects && <div className="text-red-500 text-center py-4">Error loading projects: {errorProjects}</div>}
-        <ProjectGrid projects={filteredProjects} currentRole={currentRole} isLoading={isLoadingProjects} />
+      <div className="p-4 md:p-8 min-h-screen relative">
+        <div className="absolute inset-0 backdrop-blur-xl bg-white/30 -z-10"></div>
 
-        <div className="mt-10">
-          <PredictionsPanel />
-        </div>
+        <motion.header 
+          className="mb-8"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+        >
+          <div className="flex items-center gap-3 mb-4">
+            <HomeIcon className="h-10 w-10 text-blue-600" />
+            <h1 className="text-4xl sm:text-5xl font-bold tracking-tight text-blue-800">
+              Project Overview
+            </h1>
+          </div>
+          <p className="text-lg text-gray-600">
+            Comprehensive view of all projects, metrics, and action items
+          </p>
+        </motion.header>
 
-        <h2 className="text-2xl font-semibold text-foreground mt-10 mb-6">Action Items</h2>
-        <ActionItemList items={sampleActionItems} />
+        <motion.div 
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.2 }}
+        >
+          {metrics.map((metric, index) => (
+            <motion.div
+              key={metric.title}
+              className={`bg-white/80 backdrop-blur-lg p-6 rounded-xl shadow-lg transition-all 
+                cursor-pointer ${selectedMetric === metric.title ? 'ring-2 ring-blue-500' : 'hover:shadow-xl'}`}
+              onClick={() => setSelectedMetric(selectedMetric === metric.title ? null : metric.title)}
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+            >
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-lg font-semibold text-gray-800">{metric.title}</h3>
+                <metric.icon className={`h-6 w-6 text-${metric.color}-600`} />
+              </div>
+              <div className="flex items-end justify-between">
+                <div className="text-3xl font-bold text-gray-900">{metric.value}</div>
+                <div className={`text-sm font-medium ${
+                  metric.change.startsWith('+') ? 'text-green-600' :
+                  metric.change.startsWith('-') ? 'text-red-600' :
+                  'text-gray-600'
+                }`}>
+                  {metric.change} from last month
+                </div>
+              </div>
+            </motion.div>
+          ))}
+        </motion.div>
+
+        <motion.div
+          className="bg-white/80 backdrop-blur-lg rounded-xl shadow-lg p-6 mb-8"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.3 }}
+        >
+          <div className="flex flex-col lg:flex-row gap-6 items-start lg:items-center">
+            <RoleSwitcher currentRole={currentRole} onRoleChange={handleRoleChange} />
+            <ProjectFilters 
+              filters={filters} 
+              onFilterChange={handleFilterChange} 
+              uniqueStatuses={uniqueStatuses.slice(1)}
+              uniqueRisks={uniqueRisks.slice(1)}
+              uniqueBUs={uniqueBUs.slice(1)}
+            />
+          </div>
+        </motion.div>
+
+        <motion.div
+          className="mb-8"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.4 }}
+        >
+          {errorProjects && (
+            <motion.div 
+              className="bg-red-50 text-red-800 p-4 rounded-lg mb-6"
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+            >
+              Error loading projects: {errorProjects}
+            </motion.div>
+          )}
+          <ProjectGrid 
+            projects={filteredProjects} 
+            currentRole={currentRole} 
+            isLoading={isLoadingProjects} 
+          />
+        </motion.div>
+
+        <motion.div
+          className="mb-8"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.5 }}
+        >
+          <div className="bg-white/80 backdrop-blur-lg rounded-xl shadow-lg p-6">
+            <div className="flex items-center gap-3 mb-6">
+              <ArrowTrendingUpIcon className="h-6 w-6 text-purple-600" />
+              <h2 className="text-2xl font-semibold text-gray-800">Predictions & Insights</h2>
+            </div>
+            <PredictionsPanel />
+          </div>
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.6 }}
+        >
+          <div className="bg-white/80 backdrop-blur-lg rounded-xl shadow-lg p-6">
+            <div className="flex items-center gap-3 mb-6">
+              <ClipboardDocumentCheckIcon className="h-6 w-6 text-blue-600" />
+              <h2 className="text-2xl font-semibold text-gray-800">Action Items</h2>
+            </div>
+            <ActionItemList items={sampleActionItems} />
+          </div>
+        </motion.div>
       </div>
     </RouteTransition>
   );
