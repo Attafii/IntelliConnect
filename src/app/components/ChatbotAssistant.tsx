@@ -327,14 +327,23 @@ const ChatbotAssistant = ({ isOpen, onClose }: Props) => {
 
                 {/* Input */}
                 <div className="border-t border-gray-200/30 p-4 bg-white/80 backdrop-blur-sm">
+<<<<<<< HEAD
                   <div className="flex items-center space-x-2">                    <input
+=======
+                  <div className="flex items-center space-x-2">
+                    <input
+>>>>>>> 21c5801628fea5d2514e6c70695173ad684f56e1
                       ref={inputRef}
                       type="text"
                       value={inputValue}
                       onChange={handleInputChange}
                       onKeyPress={handleKeyPress}
                       placeholder="Type your message..."
+<<<<<<< HEAD
                       className="flex-1 px-4 py-2 border bg-white/90 backdrop-blur-sm rounded-full focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent text-black"
+=======
+                      className="flex-1 px-4 py-2 border bg-white/90 backdrop-blur-sm rounded-full focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent"
+>>>>>>> 21c5801628fea5d2514e6c70695173ad684f56e1
                     />
                     <motion.button
                       whileHover={{ scale: 1.05 }}

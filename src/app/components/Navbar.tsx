@@ -1,13 +1,64 @@
 'use client';
 
 import { motion, AnimatePresence } from 'framer-motion';
+<<<<<<< HEAD
 import { XMarkIcon, ChevronDownIcon, UserIcon, CogIcon, ArrowRightOnRectangleIcon } from '@heroicons/react/24/outline';
+=======
+import { BellIcon, HomeIcon, XMarkIcon, ChevronDownIcon, UserIcon, CogIcon, ArrowRightOnRectangleIcon } from '@heroicons/react/24/outline';
+>>>>>>> 21c5801628fea5d2514e6c70695173ad684f56e1
 import { MessageCircle } from 'lucide-react';
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
 import { usePathname } from 'next/navigation';
 import ChatbotAssistant from './ChatbotAssistant';
+<<<<<<< HEAD
 import NotificationCenter from './NotificationCenter';
+=======
+
+interface Notification {
+  id: string;
+  title: string;
+  description: string;
+  time: string;
+  isRead: boolean;
+  type: 'info' | 'warning' | 'success' | 'error';
+}
+
+const mockNotifications: Notification[] = [
+  {
+    id: '1',
+    title: 'Project Update',
+    description: 'New milestone achieved in Project Phoenix',
+    time: '2 minutes ago',
+    isRead: false,
+    type: 'success'
+  },
+  {
+    id: '2',
+    title: 'Resource Alert',
+    description: 'Server utilization reached 85%',
+    time: '1 hour ago',
+    isRead: false,
+    type: 'warning'
+  },
+  {
+    id: '3',
+    title: 'Team Meeting',
+    description: 'Weekly sync at 2:00 PM',
+    time: '3 hours ago',
+    isRead: true,
+    type: 'info'
+  },
+  {
+    id: '4',
+    title: 'System Error',
+    description: 'Database connection timeout detected',
+    time: '5 hours ago',
+    isRead: true,
+    type: 'error'
+  }
+];
+>>>>>>> 21c5801628fea5d2514e6c70695173ad684f56e1
 
 const getPageTitle = (pathname: string): string => {
   const routes: { [key: string]: string } = {
@@ -25,13 +76,65 @@ const getPageTitle = (pathname: string): string => {
 
 export default function Navbar() {
   const pathname = usePathname();
+<<<<<<< HEAD
   const [showProfileMenu, setShowProfileMenu] = useState(false);
   const [showChat, setShowChat] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+=======
+  const [showNotifications, setShowNotifications] = useState(false);
+  const [showProfileMenu, setShowProfileMenu] = useState(false);
+  const [showChat, setShowChat] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [notifications, setNotifications] = useState<Notification[]>(mockNotifications);
+  const unreadCount = notifications.filter(n => !n.isRead).length;
+
+  const refreshNotifications = async () => {
+    // Simulate API call
+    await new Promise(resolve => setTimeout(resolve, 1000));
+  };
+
+  const markAsRead = (id: string) => {
+    setNotifications(notifications.map(n => 
+      n.id === id ? { ...n, isRead: true } : n
+    ));
+  };
+
+  const getNotificationStyles = (type: Notification['type']) => {
+    switch (type) {
+      case 'success':
+        return 'bg-green-50 border-green-200';
+      case 'warning':
+        return 'bg-yellow-50 border-yellow-200';
+      case 'error':
+        return 'bg-red-50 border-red-200';
+      default:
+        return 'bg-blue-50 border-blue-200';
+    }
+  };
+
+  const getNotificationIconColor = (type: Notification['type']) => {
+    switch (type) {
+      case 'success':
+        return 'bg-green-400';
+      case 'warning':
+        return 'bg-yellow-400';
+      case 'error':
+        return 'bg-red-400';
+      default:
+        return 'bg-blue-400';
+    }
+  };
+>>>>>>> 21c5801628fea5d2514e6c70695173ad684f56e1
 
   useEffect(() => {
     const closeMenus = (e: MouseEvent) => {
       const target = e.target as HTMLElement;
+<<<<<<< HEAD
+=======
+      if (!target.closest('#notification-menu')) {
+        setShowNotifications(false);
+      }
+>>>>>>> 21c5801628fea5d2514e6c70695173ad684f56e1
       if (!target.closest('#profile-menu')) {
         setShowProfileMenu(false);
       }
@@ -67,7 +170,13 @@ export default function Navbar() {
                 <div className="w-6 h-0.5 bg-white"></div>
               </div>
             )}
+<<<<<<< HEAD
           </button>          {/* Desktop navigation */}
+=======
+          </button>
+
+          {/* Desktop navigation */}
+>>>>>>> 21c5801628fea5d2514e6c70695173ad684f56e1
           <div className="hidden sm:flex items-center space-x-4">
             <motion.button
               onClick={() => setShowChat(!showChat)}
@@ -78,9 +187,86 @@ export default function Navbar() {
               <MessageCircle className="h-6 w-6" />
             </motion.button>
 
+<<<<<<< HEAD
             <NotificationCenter />
 
             <div className="relative" id="profile-menu">
+=======
+            <div className="relative">
+              <motion.button
+                onClick={() => setShowNotifications(!showNotifications)}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                className="p-2 rounded-full hover:bg-gray-800 transition-colors"
+              >
+                <BellIcon className="h-6 w-6" />
+                {unreadCount > 0 && (
+                  <span className="absolute top-0 right-0 bg-red-500 text-xs rounded-full h-5 w-5 flex items-center justify-center">
+                    {unreadCount}
+                  </span>
+                )}
+              </motion.button>
+              <AnimatePresence>
+                {showNotifications && (
+                  <motion.div
+                    initial={{ opacity: 0, scale: 0.95, y: -10 }}
+                    animate={{ opacity: 1, scale: 1, y: 0 }}
+                    exit={{ opacity: 0, scale: 0.95, y: -10 }}
+                    className="absolute right-0 mt-2 w-80 bg-white rounded-lg shadow-lg overflow-hidden"
+                    style={{ maxHeight: 'calc(100vh - 200px)' }}
+                  >
+                    <div className="p-4 border-b border-gray-100 flex justify-between items-center">
+                      <h3 className="font-semibold text-gray-800">Notifications</h3>
+                      <button 
+                        onClick={() => setShowNotifications(false)}
+                        className="text-gray-500 hover:text-gray-700"
+                      >
+                        <XMarkIcon className="h-5 w-5" />
+                      </button>
+                    </div>
+                    <div className="overflow-y-auto" style={{ maxHeight: 'calc(100vh - 280px)' }}>
+                      {notifications.length === 0 ? (
+                        <div className="p-4 text-center text-gray-500">
+                          No notifications
+                        </div>
+                      ) : (
+                        notifications.map((notification) => (
+                          <motion.div
+                            key={notification.id}
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            className={`p-4 border-b last:border-b-0 cursor-pointer hover:bg-gray-50 transition-colors duration-200
+                              ${notification.isRead ? 'opacity-75' : 'opacity-100'} ${getNotificationStyles(notification.type)}`}
+                            onClick={() => markAsRead(notification.id)}
+                          >
+                            <div className="flex items-start">
+                              <div className={`w-2 h-2 mt-2 rounded-full ${getNotificationIconColor(notification.type)} flex-shrink-0`} />
+                              <div className="ml-3 flex-1">
+                                <div className="flex items-center justify-between">
+                                  <p className="text-sm font-medium text-gray-900">
+                                    {notification.title}
+                                  </p>
+                                  <span className="text-xs text-gray-500">
+                                    {notification.time}
+                                  </span>
+                                </div>
+                                <p className="text-sm text-gray-600 mt-1">
+                                  {notification.description}
+                                </p>
+                              </div>
+                            </div>
+                          </motion.div>
+                        ))
+                      )}
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+
+            <div className="relative">
+>>>>>>> 21c5801628fea5d2514e6c70695173ad684f56e1
               <motion.button
                 onClick={() => setShowProfileMenu(!showProfileMenu)}
                 whileHover={{ scale: 1.05 }}
@@ -120,7 +306,13 @@ export default function Navbar() {
             </div>
           </div>
         </div>
+<<<<<<< HEAD
       </div>      {/* Mobile menu */}
+=======
+      </div>
+
+      {/* Mobile menu */}
+>>>>>>> 21c5801628fea5d2514e6c70695173ad684f56e1
       <AnimatePresence>
         {isMobileMenuOpen && (
           <motion.div
@@ -140,9 +332,27 @@ export default function Navbar() {
                 <MessageCircle className="h-5 w-5 mr-3" />
                 Chat Assistant
               </button>
+<<<<<<< HEAD
               <div className="px-3 py-2">
                 <NotificationCenter />
               </div>
+=======
+              <button
+                onClick={() => {
+                  setShowNotifications(true);
+                  setIsMobileMenuOpen(false);
+                }}
+                className="w-full text-left px-3 py-2 rounded-md hover:bg-gray-800 transition-colors flex items-center"
+              >
+                <BellIcon className="h-5 w-5 mr-3" />
+                Notifications
+                {unreadCount > 0 && (
+                  <span className="ml-2 bg-red-500 text-xs rounded-full h-5 w-5 flex items-center justify-center">
+                    {unreadCount}
+                  </span>
+                )}
+              </button>
+>>>>>>> 21c5801628fea5d2514e6c70695173ad684f56e1
               <button
                 onClick={() => {
                   setShowProfileMenu(true);
