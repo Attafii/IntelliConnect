@@ -28,12 +28,13 @@ export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
-}>) {  return (
+}>) {
+  return (
     <html lang="en">
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-gradient-to-b from-blue-500 to-white min-h-screen`}
-<<<<<<< HEAD
-      >        <NotificationProvider>
+      >
+        <NotificationProvider>
           <InitialNotifications />
           <Sidebar />
           <Navbar />
@@ -43,17 +44,6 @@ export default function RootLayout({
             </div>
           </main>
         </NotificationProvider>
-=======
-      >
-        <Sidebar />
-        <Navbar />
-        <main className="pt-16 pl-20 lg:pl-64 min-h-screen">
-          <div className="p-6">
-            {children}
-          </div>
-        </main>
-        <ChatbotAssistant />
->>>>>>> 21c5801628fea5d2514e6c70695173ad684f56e1
       </body>
     </html>
   );
