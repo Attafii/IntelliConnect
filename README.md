@@ -165,3 +165,19 @@ If you are adding new components that rely on charting libraries or icon sets, p
 *   **Lucide React**: For icons. Install with `npm install lucide-react`.
 
 Ensure these are installed if you are working with or extending components that use them.
+
+## Example: Generic API Call with curl
+
+You can use curl to call any API endpoint. Replace `<API_URL>` and `<DATA>` as needed:
+
+```bash
+curl -X POST <API_URL> \
+  -H "Content-Type: application/json" \
+  -d '{"key": "value"}'
+```
+
+For GET requests:
+
+```bash
+curl <API_URL>
+```
