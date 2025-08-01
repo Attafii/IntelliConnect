@@ -21,6 +21,8 @@ export interface Notification {
   read?: boolean;
   actionLabel?: string;
   onAction?: () => void;
+  category?: string; // Optional categorization
+  priority?: 'low' | 'medium' | 'high' | 'urgent'; // Priority level
 }
 
 interface NotificationState {
@@ -95,13 +97,13 @@ const NotificationContext = createContext<NotificationContextType | undefined>(u
 
 export function NotificationProvider({ children }: { children: ReactNode }) {
   const [state, dispatch] = useReducer(notificationReducer, initialState);
-
   const addNotification = useCallback((notification: Omit<Notification, 'id' | 'timestamp'>) => {
     const newNotification: Notification = {
       ...notification,
       id: Math.random().toString(36).substr(2, 9),
       timestamp: new Date(),
-      read: false
+      read: false,
+      priority: notification.priority || 'medium'
     };
     dispatch({ type: 'ADD_NOTIFICATION', payload: newNotification });
   }, []);
@@ -117,13 +119,13 @@ export function NotificationProvider({ children }: { children: ReactNode }) {
   const clearAllNotifications = useCallback(() => {
     dispatch({ type: 'CLEAR_ALL_NOTIFICATIONS' });
   }, []);
-
   const showToast = useCallback((notification: Omit<Notification, 'id' | 'timestamp'>) => {
     const newToast: Notification = {
       ...notification,
       id: Math.random().toString(36).substr(2, 9),
       timestamp: new Date(),
-      duration: notification.duration ?? 5000
+      duration: notification.duration ?? 5000,
+      priority: notification.priority || 'medium'
     };
     
     dispatch({ type: 'ADD_TOAST', payload: newToast });
@@ -166,7 +168,7 @@ export function useNotifications() {
 }
 
 // Toast Container Component
-function ToastContainer() {
+export function ToastContainer() {
   const { toasts } = useNotifications();
 
   return (
@@ -182,7 +184,7 @@ function ToastContainer() {
 
 // Individual Toast Component
 function ToastNotification({ notification }: { notification: Notification }) {
-  const { showToast } = useNotifications();
+  const { toasts } = useNotifications();
 
   const removeToast = () => {
     // This will be handled by the auto-removal timeout
@@ -214,41 +216,62 @@ function ToastNotification({ notification }: { notification: Notification }) {
     }
   };
 
+  const getPriorityIndicator = () => {
+    switch (notification.priority) {
+      case 'urgent':
+        return 'border-l-4 border-red-500';
+      case 'high':
+        return 'border-l-4 border-orange-500';
+      case 'medium':
+        return 'border-l-4 border-blue-500';
+      case 'low':
+        return 'border-l-4 border-gray-400';
+      default:
+        return '';
+    }
+  };
+
   return (
     <motion.div
       initial={{ opacity: 0, x: 300, scale: 0.9 }}
       animate={{ opacity: 1, x: 0, scale: 1 }}
       exit={{ opacity: 0, x: 300, scale: 0.9 }}
-      className={`max-w-sm w-full bg-white rounded-lg shadow-lg border ${getColorClasses()} pointer-events-auto`}
+      className={`max-w-sm w-full bg-white rounded-lg shadow-lg border ${getColorClasses()} ${getPriorityIndicator()} pointer-events-auto overflow-hidden`}
     >
       <div className="p-4">
         <div className="flex items-start">
           <div className="flex-shrink-0">
             {getIcon()}
-          </div>          <div className="ml-3 w-0 flex-1">
-            <p className="text-sm font-medium text-black">
-              {notification.title}
-            </p>            <p className="mt-1 text-sm text-black">
-              {notification.message}
-            </p>
-            {notification.actionLabel && notification.onAction && (
-              <div className="mt-3">
+          </div>
+          <div className="ml-3 w-0 flex-1">
+            <div className="flex items-start justify-between">
+              <div className="flex-1">
+                <p className="text-sm font-medium text-gray-900">
+                  {notification.title}
+                </p>
+                <p className="mt-1 text-sm text-gray-600 leading-relaxed">
+                  {notification.message}
+                </p>
+                {notification.actionLabel && notification.onAction && (
+                  <div className="mt-3">
+                    <button
+                      onClick={notification.onAction}
+                      className="inline-flex items-center px-3 py-1 text-sm font-medium text-blue-600 bg-blue-50 hover:bg-blue-100 rounded-md transition-colors duration-200"
+                    >
+                      {notification.actionLabel}
+                    </button>
+                  </div>
+                )}
+              </div>
+              <div className="ml-4 flex-shrink-0 flex">
                 <button
-                  onClick={notification.onAction}
-                  className="text-sm font-medium text-blue-600 hover:text-blue-500"
+                  onClick={removeToast}
+                  className="bg-white rounded-md inline-flex text-gray-400 hover:text-gray-500 focus:outline-none p-1"
                 >
-                  {notification.actionLabel}
+                  <XMarkIcon className="h-4 w-4" />
                 </button>
               </div>
-            )}
-          </div>
-          <div className="ml-4 flex-shrink-0 flex">
-            <button
-              onClick={removeToast}
-              className="bg-white rounded-md inline-flex text-gray-400 hover:text-gray-500 focus:outline-none"
-            >
-              <XMarkIcon className="h-5 w-5" />
-            </button>
+            </div>
           </div>
         </div>
       </div>

@@ -2,13 +2,22 @@
 
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { MessageCircle, Send, X, Volume2, ArrowUpCircle } from 'lucide-react';
+import { MessageCircle, Send, X, Volume2, ArrowUpCircle, Globe, VolumeX } from 'lucide-react';
+import { 
+  translations, 
+  botResponses, 
+  getSuggestions, 
+  getRandomResponse, 
+  detectLanguageFromMessage,
+  type Translation 
+} from './LanguageTranslations';
 
 interface Message {
   id: string;
   text: string;
   sender: 'user' | 'bot';
   suggestions?: string[];
+  language?: string;
 }
 
 interface Props {
@@ -16,37 +25,68 @@ interface Props {
   onClose: () => void;
 }
 
-const ChatbotAssistant = ({ isOpen, onClose }: Props) => {
-  const [isMinimized, setIsMinimized] = useState(false);
+const ChatbotAssistant = ({ isOpen, onClose }: Props) => {  const [isMinimized, setIsMinimized] = useState(false);
   const [messages, setMessages] = useState<Message[]>([]);
   const [inputValue, setInputValue] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [isTTSEnabled, setIsTTSEnabled] = useState(true);
   const [volume, setVolume] = useState(50);
   const [scrollPosition, setScrollPosition] = useState(0);
+  const [currentLanguage, setCurrentLanguage] = useState<string>('en');
+  const [showLanguageMenu, setShowLanguageMenu] = useState(false);
+  const [isSpeaking, setIsSpeaking] = useState<string | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const messagesContainerRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const chatRef = useRef<HTMLDivElement>(null);
-  const initialBotMessage = {
+  
+  const t: Translation = translations[currentLanguage] || translations.en;
+  
+  const languages = [
+    { code: 'en', name: 'English', flag: '🇺🇸' },
+    { code: 'fr', name: 'Français', flag: '🇫🇷' },
+    { code: 'tn', name: 'العربية التونسية', flag: '🇹🇳' }
+  ];
+  
+  const getInitialBotMessage = (): Message => ({
     id: 'initial-bot-message',
-    text: 'Hello! How can I help you today?',
-    sender: 'bot' as const,
-    suggestions: ['Project status updates', 'Financial overview', 'Resource allocation'],
-  };
-  useEffect(() => {
+    text: t.hello,
+    sender: 'bot',
+    suggestions: getSuggestions(currentLanguage).slice(0, 3),
+    language: currentLanguage
+  });  useEffect(() => {
     if (isOpen && messages.length === 0) {
-      setMessages([initialBotMessage]);
+      setMessages([getInitialBotMessage()]);
     }
     if (isOpen && inputRef.current) {
       inputRef.current.focus();
     }
-  }, [isOpen]);
+  }, [isOpen, messages.length, currentLanguage]);
+
+  // Update existing messages when language changes
+  useEffect(() => {
+    if (messages.length > 0) {
+      setMessages(prevMessages => {
+        return prevMessages.map(msg => {
+          if (msg.id === 'initial-bot-message') {
+            return {
+              ...msg,
+              text: t.hello,
+              suggestions: getSuggestions(currentLanguage).slice(0, 3),
+              language: currentLanguage
+            };
+          }
+          return msg;
+        });
+      });
+    }
+  }, [currentLanguage]);
+
   useEffect(() => {
     if (messages.length > 0) {
       messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
     }
   }, [messages.length]);
-
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (chatRef.current && !chatRef.current.contains(event.target as Node)) {
@@ -62,6 +102,62 @@ const ChatbotAssistant = ({ isOpen, onClose }: Props) => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, [isOpen, onClose]);
+
+  // Enhanced: Add shortcut event listeners
+  useEffect(() => {
+    const handleShortcutEvents = (e: CustomEvent) => {
+      switch (e.type) {
+        case 'smartshortcut:clear-chat':
+          handleClearChat();
+          break;
+        case 'smartshortcut:toggle-tts':
+          handleToggleTTS();
+          break;
+        case 'smartshortcut:cycle-language':
+          handleCycleLanguage();
+          break;
+        case 'chat:send-message':
+          if (e.detail?.message) {
+            handleSendMessage(e.detail.message);
+          }
+          break;
+      }
+    };
+
+    const events = [
+      'smartshortcut:clear-chat',
+      'smartshortcut:toggle-tts',
+      'smartshortcut:cycle-language',
+      'chat:send-message'
+    ];
+
+    events.forEach(event => {
+      document.addEventListener(event, handleShortcutEvents as EventListener);
+    });
+
+    return () => {
+      events.forEach(event => {
+        document.removeEventListener(event, handleShortcutEvents as EventListener);
+      });
+    };
+  }, []);
+
+  const handleClearChat = () => {
+    setMessages([getInitialBotMessage()]);
+    if (inputRef.current) {
+      inputRef.current.focus();
+    }
+  };
+
+  const handleToggleTTS = () => {
+    setIsTTSEnabled(prev => !prev);
+  };
+
+  const handleCycleLanguage = () => {
+    const currentIndex = languages.findIndex(lang => lang.code === currentLanguage);
+    const nextIndex = (currentIndex + 1) % languages.length;
+    setCurrentLanguage(languages[nextIndex].code);
+  };
 
   const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
     const container = e.currentTarget;
@@ -88,15 +184,21 @@ const ChatbotAssistant = ({ isOpen, onClose }: Props) => {
       e.preventDefault();
       handleSendMessage();
     }
-  };    
-  const handleSendMessage = async (text?: string) => {
+  };      const handleSendMessage = async (text?: string) => {
     const messageText = text || inputValue.trim();
     if (!messageText) return;
+
+    // Detect language from user message
+    const detectedLang = detectLanguageFromMessage(messageText);
+    if (detectedLang !== currentLanguage) {
+      setCurrentLanguage(detectedLang);
+    }
 
     const newUserMessage: Message = {
       id: Date.now().toString(),
       text: messageText,
       sender: 'user',
+      language: detectedLang
     };
 
     setMessages((prev) => [...prev, newUserMessage]);
@@ -104,7 +206,6 @@ const ChatbotAssistant = ({ isOpen, onClose }: Props) => {
     setIsLoading(true);
 
     try {
-      console.log('Sending message:', messageText);
       const response = await fetch('/api/analysis/chat', {
         method: 'POST',
         headers: {
@@ -112,46 +213,107 @@ const ChatbotAssistant = ({ isOpen, onClose }: Props) => {
         },
         body: JSON.stringify({
           message: messageText,
+          language: detectedLang,
         }),
       });
 
       const data = await response.json();
 
       if (!response.ok) {
-        console.error('Error response:', data);
         throw new Error(data.details || 'Failed to get response from chatbot');
       }
 
-      console.log('Received response:', data);
+      // Generate contextual suggestions based on message content
+      let suggestions: string[] = [];
+      const lowerMessage = messageText.toLowerCase();
       
-      if (!data.reply) {
-        throw new Error('Invalid response format: missing reply');
+      if (lowerMessage.includes('project') || lowerMessage.includes('مشروع') || lowerMessage.includes('projet')) {
+        suggestions = getSuggestions(detectedLang).filter(s => 
+          s.toLowerCase().includes('project') || 
+          s.includes('مشروع') || 
+          s.toLowerCase().includes('projet')
+        );
+      } else if (lowerMessage.includes('financial') || lowerMessage.includes('مالي') || lowerMessage.includes('financier')) {
+        suggestions = getSuggestions(detectedLang).filter(s => 
+          s.toLowerCase().includes('financial') || 
+          s.includes('مالي') || 
+          s.toLowerCase().includes('financier')
+        );
+      } else {
+        suggestions = getSuggestions(detectedLang).slice(0, 3);
       }
 
       const botMessage: Message = {
         id: (Date.now() + 1).toString(),
-        text: data.reply,
+        text: data.reply || getRandomResponse(detectedLang, 'general'),
         sender: 'bot',
-        suggestions: data.suggestions,
+        suggestions: suggestions,
+        language: detectedLang
       };
 
       setMessages((prev) => [...prev, botMessage]);
     } catch (error) {
       console.error('Error in chat:', error);
       const errorMessage = error instanceof Error ? error.message : 'An unexpected error occurred';
+      const currentT = translations[currentLanguage] || translations.en;
       const errorResponse: Message = {
         id: (Date.now() + 1).toString(),
-        text: `Sorry, I encountered an error: ${errorMessage}. Please try again.`,
+        text: `${currentT.error}: ${errorMessage}. ${currentT.tryAgain}.`,
         sender: 'bot',
+        language: currentLanguage
       };
       setMessages((prev) => [...prev, errorResponse]);
     } finally {
       setIsLoading(false);
     }
   };
-
   const handleSuggestionClick = (suggestion: string) => {
     handleSendMessage(suggestion);
+  };
+  const handleLanguageChange = (langCode: string) => {
+    setCurrentLanguage(langCode);
+    setShowLanguageMenu(false);
+  };
+
+  const speakMessage = (text: string, messageId: string, language: string) => {
+    // Stop any currently playing speech
+    if (speechSynthesis.speaking) {
+      speechSynthesis.cancel();
+    }
+
+    setIsSpeaking(messageId);
+    
+    const utterance = new SpeechSynthesisUtterance(text);
+    
+    // Set language-specific voice settings
+    if (language === 'tn') {
+      utterance.lang = 'ar-TN'; // Tunisian Arabic
+      utterance.rate = 0.8;
+    } else if (language === 'fr') {
+      utterance.lang = 'fr-FR'; // French
+      utterance.rate = 0.9;
+    } else {
+      utterance.lang = 'en-US'; // English
+      utterance.rate = 1.0;
+    }
+    
+    utterance.volume = volume / 100;
+    utterance.pitch = 1;
+    
+    utterance.onend = () => {
+      setIsSpeaking(null);
+    };
+    
+    utterance.onerror = () => {
+      setIsSpeaking(null);
+    };
+    
+    speechSynthesis.speak(utterance);
+  };
+
+  const stopSpeaking = () => {
+    speechSynthesis.cancel();
+    setIsSpeaking(null);
   };
 
   return (
@@ -177,14 +339,53 @@ const ChatbotAssistant = ({ isOpen, onClose }: Props) => {
               `}
           `}
         >
-          <div className="bg-white/90 backdrop-blur-sm rounded-lg shadow-2xl w-full h-full flex flex-col overflow-hidden">
-            {/* Header */}
+          <div className="bg-white/90 backdrop-blur-sm rounded-lg shadow-2xl w-full h-full flex flex-col overflow-hidden">            {/* Header */}
             <div className="flex items-center justify-between px-4 py-3 bg-gray-900/90 backdrop-blur-sm text-white">
               <div className="flex items-center space-x-2">
                 <MessageCircle className="h-5 w-5" />
-                <h3 className="font-medium">Chat Assistant</h3>
+                <h3 className="font-medium">{t.chatAssistant}</h3>
               </div>
               <div className="flex items-center space-x-2">
+                {/* Language Switcher */}
+                <div className="relative">
+                  <button
+                    onClick={() => setShowLanguageMenu(!showLanguageMenu)}
+                    className="flex items-center space-x-1 px-2 py-1 hover:bg-gray-800 rounded-md transition-colors"
+                    title="Change Language"
+                  >
+                    <Globe className="h-4 w-4" />
+                    <span className="text-sm">
+                      {languages.find(lang => lang.code === currentLanguage)?.flag}
+                    </span>
+                  </button>
+                  
+                  <AnimatePresence>
+                    {showLanguageMenu && (
+                      <motion.div
+                        initial={{ opacity: 0, scale: 0.95, y: -10 }}
+                        animate={{ opacity: 1, scale: 1, y: 0 }}
+                        exit={{ opacity: 0, scale: 0.95, y: -10 }}
+                        transition={{ duration: 0.15 }}
+                        className="absolute top-full right-0 mt-1 bg-white/95 backdrop-blur-sm rounded-lg shadow-lg border border-gray-200/30 py-1 min-w-[140px] z-50"
+                      >
+                        {languages.map((lang) => (
+                          <button
+                            key={lang.code}
+                            onClick={() => handleLanguageChange(lang.code)}
+                            className={`
+                              w-full px-3 py-2 text-left hover:bg-gray-100/80 transition-colors flex items-center space-x-2 text-sm
+                              ${currentLanguage === lang.code ? 'bg-gray-100/80 text-gray-900' : 'text-gray-700'}
+                            `}
+                          >
+                            <span>{lang.flag}</span>
+                            <span className={currentLanguage === 'tn' ? 'text-right' : ''}>{lang.name}</span>
+                          </button>
+                        ))}
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
+                
                 <div className="flex items-center space-x-2 px-2">
                   <Volume2 className="h-4 w-4" />
                   <input
@@ -194,7 +395,7 @@ const ChatbotAssistant = ({ isOpen, onClose }: Props) => {
                     value={volume}
                     onChange={(e) => setVolume(parseInt(e.target.value))}
                     className="w-20 h-1 bg-gray-700 rounded-lg appearance-none cursor-pointer accent-white"
-                    title="Response Speed"
+                    title={t.responseSpeed}
                   />
                 </div>
                 <button
@@ -253,17 +454,14 @@ const ChatbotAssistant = ({ isOpen, onClose }: Props) => {
                       >
                         <ArrowUpCircle className="h-5 w-5" />
                       </motion.button>
-                    )}
-
-                    {messages.map((message) => (
+                    )}                    {messages.map((message) => (
                       <motion.div
                         key={message.id}
                         initial={{ opacity: 0, y: 10 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.2 }}
                         className={`flex ${message.sender === 'user' ? 'justify-end' : 'justify-start'}`}
-                      >
-                        <div
+                      >                        <div
                           className={`
                             max-w-[80%] rounded-lg p-4 shadow-md
                             ${message.sender === 'user'
@@ -272,14 +470,52 @@ const ChatbotAssistant = ({ isOpen, onClose }: Props) => {
                             }
                           `}
                         >
-                          <p className="text-sm whitespace-pre-wrap">{message.text}</p>
+                          <div className="flex items-start justify-between">
+                            <p 
+                              className={`text-sm whitespace-pre-wrap flex-1 ${
+                                message.language === 'tn' ? 'text-right' : 'text-left'
+                              }`}
+                              dir={message.language === 'tn' ? 'rtl' : 'ltr'}
+                            >
+                              {message.text}
+                            </p>
+                            
+                            {/* Speech button for bot messages */}
+                            {message.sender === 'bot' && (
+                              <button
+                                onClick={() => 
+                                  isSpeaking === message.id 
+                                    ? stopSpeaking() 
+                                    : speakMessage(message.text, message.id, message.language || currentLanguage)
+                                }
+                                className={`ml-2 p-1 rounded-full transition-colors ${
+                                  isSpeaking === message.id 
+                                    ? 'bg-red-100 text-red-600 hover:bg-red-200' 
+                                    : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                                }`}
+                                title={isSpeaking === message.id ? 'Stop speaking' : 'Speak message'}
+                              >
+                                {isSpeaking === message.id ? (
+                                  <VolumeX className="h-3 w-3" />
+                                ) : (
+                                  <Volume2 className="h-3 w-3" />
+                                )}
+                              </button>
+                            )}
+                          </div>
+                          
                           {message.suggestions && message.suggestions.length > 0 && (
-                            <div className="mt-3 flex flex-wrap gap-2">
+                            <div className={`mt-3 flex flex-wrap gap-2 ${
+                              message.language === 'tn' ? 'justify-end' : 'justify-start'
+                            }`}>
                               {message.suggestions.map((suggestion, index) => (
                                 <button
                                   key={index}
                                   onClick={() => handleSuggestionClick(suggestion)}
-                                  className="text-xs px-3 py-1.5 rounded-full bg-gray-800/90 text-white hover:bg-gray-700 transition-colors"
+                                  className={`text-xs px-3 py-1.5 rounded-full bg-gray-800/90 text-white hover:bg-gray-700 transition-colors ${
+                                    message.language === 'tn' ? 'text-right' : 'text-left'
+                                  }`}
+                                  dir={message.language === 'tn' ? 'rtl' : 'ltr'}
                                 >
                                   {suggestion}
                                 </button>
@@ -323,27 +559,22 @@ const ChatbotAssistant = ({ isOpen, onClose }: Props) => {
                       }}
                     />
                   </motion.div>
-                </div>
-
-                {/* Input */}
+                </div>                {/* Input */}
                 <div className="border-t border-gray-200/30 p-4 bg-white/80 backdrop-blur-sm">
-<<<<<<< HEAD
                   <div className="flex items-center space-x-2">                    <input
-=======
-                  <div className="flex items-center space-x-2">
-                    <input
->>>>>>> 21c5801628fea5d2514e6c70695173ad684f56e1
                       ref={inputRef}
                       type="text"
                       value={inputValue}
                       onChange={handleInputChange}
                       onKeyPress={handleKeyPress}
-                      placeholder="Type your message..."
-<<<<<<< HEAD
-                      className="flex-1 px-4 py-2 border bg-white/90 backdrop-blur-sm rounded-full focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent text-black"
-=======
-                      className="flex-1 px-4 py-2 border bg-white/90 backdrop-blur-sm rounded-full focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent"
->>>>>>> 21c5801628fea5d2514e6c70695173ad684f56e1
+                      placeholder={t.typeMessage}
+                      data-chat-input
+                      className={`
+                        flex-1 px-4 py-2 border bg-white/90 backdrop-blur-sm rounded-full 
+                        focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent text-black
+                        ${currentLanguage === 'tn' ? 'text-right' : 'text-left'}
+                      `}
+                      dir={currentLanguage === 'tn' ? 'rtl' : 'ltr'}
                     />
                     <motion.button
                       whileHover={{ scale: 1.05 }}

@@ -5,7 +5,7 @@ import RouteTransition from '../components/RouteTransition';
 import { motion } from 'framer-motion';
 import { 
   PlusCircleIcon, PencilSquareIcon, TrashIcon, CheckCircleIcon, ArrowPathIcon,
-  ExclamationCircleIcon, ClockIcon, UserGroupIcon, DocumentCheckIcon
+  ExclamationCircleIcon, ClockIcon
 } from '@heroicons/react/24/outline';
 
 const actionItems = [
@@ -61,15 +61,6 @@ const getStatusColor = (status: string) => {
     case 'Completed': return 'text-green-600';
     case 'In Progress': return 'text-blue-600';
     case 'Pending': return 'text-amber-600';
-    default: return 'text-gray-600';
-  }
-};
-
-const getPriorityColor = (priority: string) => {
-  switch (priority) {
-    case 'High': return 'text-red-600';
-    case 'Medium': return 'text-orange-600';
-    case 'Low': return 'text-blue-600';
     default: return 'text-gray-600';
   }
 };

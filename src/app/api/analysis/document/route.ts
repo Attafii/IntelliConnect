@@ -1,62 +1,128 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { openai } from '@/lib/apiConfig';
+
+// Smart document analysis without AI service
+function analyzeDocumentContent(extractedText: string, question: string, fileName: string, fileType: string): string {
+  const text = extractedText.toLowerCase();
+  const questionLower = question.toLowerCase();
+  
+  // Basic analysis based on content patterns
+  let analysis = `## Document Analysis Results for "${fileName}"\n\n`;
+  
+  // Determine file type analysis
+  if (fileType.includes('csv') || fileName.includes('.csv')) {
+    analysis += analyzeCSVContent(extractedText, question);
+  } else if (fileType.includes('pdf') || fileName.includes('.pdf')) {
+    analysis += analyzePDFContent(extractedText, question);
+  } else {
+    analysis += analyzeGenericContent(extractedText, question);
+  }
+  
+  return analysis;
+}
+
+function analyzeCSVContent(content: string, question: string): string {
+  const lines = content.split('\n').filter(line => line.trim());
+  const headers = lines[0]?.split(',') || [];
+  const dataRows = lines.slice(1);
+  
+  let analysis = `### CSV Data Analysis\n\n`;
+  analysis += `**File Structure:**\n`;
+  analysis += `- Headers: ${headers.join(', ')}\n`;
+  analysis += `- Total Rows: ${dataRows.length}\n`;
+  analysis += `- Data Points: ${headers.length * dataRows.length}\n\n`;
+  
+  // Identify data patterns
+  const numericColumns = headers.filter(header => {
+    return dataRows.some(row => {
+      const value = row.split(',')[headers.indexOf(header)];
+      return !isNaN(Number(value)) && value.trim() !== '';
+    });
+  });
+  
+  if (numericColumns.length > 0) {
+    analysis += `**Numeric Columns Detected:** ${numericColumns.join(', ')}\n\n`;
+  }
+  
+  // Answer specific questions
+  const questionLower = question.toLowerCase();
+  if (questionLower.includes('trend') || questionLower.includes('pattern')) {
+    analysis += `**Trend Analysis:**\n`;
+    analysis += `- ${dataRows.length} data points available for trend analysis\n`;
+    analysis += `- Numeric fields identified: ${numericColumns.join(', ')}\n`;
+    analysis += `- Time-based analysis possible if date columns are present\n\n`;
+  }
+  
+  if (questionLower.includes('revenue') || questionLower.includes('sales')) {
+    const revenueColumn = headers.find(h => h.toLowerCase().includes('revenue') || h.toLowerCase().includes('sales'));
+    if (revenueColumn) {
+      analysis += `**Revenue/Sales Analysis:**\n`;
+      analysis += `- Revenue column detected: "${revenueColumn}"\n`;
+      analysis += `- ${dataRows.length} revenue data points available\n`;
+    }
+  }
+  
+  analysis += `**Key Insights:**\n`;
+  analysis += `- Dataset contains ${headers.length} variables across ${dataRows.length} observations\n`;
+  analysis += `- Suitable for quantitative analysis and trend identification\n`;
+  analysis += `- Can support business intelligence and reporting needs\n\n`;
+    analysis += `**Recommendations:**\n`;
+  analysis += `- Perform time-series analysis on date-based columns\n`;
+  analysis += `- Calculate statistical measures (mean, median, trends) for numeric columns\n`;
+  analysis += `- Create visualizations to identify patterns and outliers\n`;
+  analysis += `- Consider segmentation analysis based on categorical variables\n`;
+  
+  return analysis;
+}
+
+function analyzePDFContent(content: string, question: string): string {
+  let analysis = `### PDF Document Analysis\n\n`;
+  
+  const wordCount = content.split(/\s+/).length;
+  const paragraphs = content.split('\n\n').filter(p => p.trim().length > 0);
+  
+  analysis += `**Document Structure:**\n`;
+  analysis += `- Word count: ${wordCount}\n`;
+  analysis += `- Paragraph count: ${paragraphs.length}\n`;
+  analysis += `- Average words per paragraph: ${Math.round(wordCount / paragraphs.length)}\n\n`;
+  
+  // Answer specific questions
+  const questionLower = question.toLowerCase();
+  if (questionLower.includes('summary') || questionLower.includes('main')) {
+    analysis += `**Document Summary:**\n`;
+    analysis += `- This appears to be a ${wordCount > 1000 ? 'comprehensive' : 'concise'} document\n`;
+    analysis += `- Contains ${paragraphs.length} main sections or topics\n`;
+    analysis += `- Suitable for detailed analysis and information extraction\n\n`;
+  }
+  
+  return analysis;
+}
+
+function analyzeGenericContent(content: string, question: string): string {
+  let analysis = `### Content Analysis\n\n`;
+  analysis += `Based on the document content and your question: "${question}"\n\n`;
+  analysis += `The document contains valuable information that can be analyzed for insights.\n`;
+  return analysis;
+}
 
 export async function POST(request: NextRequest) {
   try {
-    const body = await request.json();
-    const { extractedText, question, fileName, fileType } = body;
-
-    console.log('Document analysis request:', { 
-      fileName, 
-      fileType, 
-      question, 
-      textLength: extractedText?.length 
-    });
+    const { extractedText, question, fileName, fileType } = await request.json();
 
     if (!extractedText || !question) {
-      return NextResponse.json({ 
-        error: 'Missing required fields: extractedText and question' 
-      }, { status: 400 });
+      return NextResponse.json(
+        { error: 'Missing required fields: extractedText and question' },
+        { status: 400 }
+      );
     }
 
-    // Prepare the system message based on file type
-    let systemMessage = 'You are an expert document analyzer. Analyze the provided document content and answer questions about it with detailed insights.';
+    console.log('Processing document analysis request');
+    console.log('File type:', fileType);
+    console.log('Question:', question);
+
+    // Use smart analysis function
+    const reply = analyzeDocumentContent(extractedText, question, fileName, fileType);    // Generate relevant suggestions based on the file type and content
+    let suggestions: string[] = [];
     
-    if (fileType === 'application/pdf') {
-      systemMessage += ' This is content extracted from a PDF document. Focus on extracting key information, summaries, and insights.';
-    } else if (fileType === 'text/csv') {
-      systemMessage += ' This is data from a CSV file. Focus on data analysis, patterns, trends, and statistical insights.';
-    }
-
-    // Create the analysis prompt
-    const analysisPrompt = `Document: ${fileName}
-Type: ${fileType === 'application/pdf' ? 'PDF Document' : 'CSV Data'}
-
-Content:
-${extractedText}
-
-Question: ${question}
-
-Please provide a comprehensive analysis answering the question. If analyzing data, include relevant insights about patterns, trends, or anomalies. Be specific and actionable in your response.`;
-
-    console.log('Sending request to OpenAI...');
-
-    const response = await openai.chat.completions.create({
-      model: 'openai.gpt-4o',
-      messages: [
-        { role: 'system', content: systemMessage },
-        { role: 'user', content: analysisPrompt }
-      ],
-      temperature: 0.3,
-      max_tokens: 1000
-    });
-
-    console.log('OpenAI response received');
-
-    const reply = response.choices[0]?.message?.content || 'No analysis available';
-
-    // Generate relevant suggestions based on the file type and content
-    let suggestions = [];
     if (fileType === 'application/pdf') {
       suggestions = [
         'What are the key takeaways?',
@@ -84,7 +150,7 @@ Please provide a comprehensive analysis answering the question. If analyzing dat
     console.error('Document analysis error:', error);
     
     // Provide a fallback response for testing
-    const fallbackResponse = `I've received your document for analysis. While I'm experiencing some technical difficulties with the AI service, I can see that you've uploaded a document and asked: "${request.body?.question || 'a question'}".
+    const fallbackResponse = `I've received your document for analysis. While I'm experiencing some technical difficulties with the AI service, I can see that you've uploaded a document.
 
 This feature is designed to:
 - Extract and analyze text from PDF documents

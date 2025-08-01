@@ -51,9 +51,8 @@ export default function Home() {
             className="text-xl mb-8 text-black max-w-2xl mx-auto"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ delay: 0.5 }}
-          >
-            A comprehensive business intelligence and project management platform that seamlessly integrates financial analytics, resource management, and AI-powered insights.
+            transition={{ delay: 0.5 }}          >
+            A comprehensive business intelligence and project management platform that integrates financial analytics, resource management, and data insights.
           </motion.p>
 
           <motion.div 
@@ -66,26 +65,24 @@ export default function Home() {
               Get Started
             </Link>
             <Link href="/intelligence" className="px-8 py-3 bg-purple-600 hover:bg-purple-700 text-white rounded-lg font-medium transition-colors duration-200">
-              Try AI Features
+              View Analytics
             </Link>
-          </motion.div>
-
-          <motion.div 
+          </motion.div>          <motion.div 
             className="mt-16 grid grid-cols-1 sm:grid-cols-3 gap-8 text-center"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.9 }}
-          >            <div className="p-6 rounded-xl bg-white shadow-lg">
-              <h3 className="text-lg font-semibold mb-2 text-blue-600">Smart Analytics</h3>
-              <p className="text-black">Real-time insights and predictive analytics for informed decision-making</p>
+          >
+            <div className="p-6 rounded-xl bg-white shadow-lg">
+              <h3 className="text-lg font-semibold mb-2 text-blue-600">Data Analytics</h3>
+              <p className="text-black">Real-time insights and analytics for informed decision-making</p>
             </div>
             <div className="p-6 rounded-xl bg-white shadow-lg">
-              <h3 className="text-lg font-semibold mb-2 text-blue-600">Resource Management</h3>
+              <h3 className="text-lg font-semibold mb-2 text-blue-600">Project Management</h3>
               <p className="text-black">Optimize resource allocation and track project milestones efficiently</p>
-            </div>
-            <div className="p-6 rounded-xl bg-white shadow-lg">
-              <h3 className="text-lg font-semibold mb-2 text-blue-600">AI Integration</h3>
-              <p className="text-black">Advanced AI capabilities for automation and intelligent insights</p>
+            </div><div className="p-6 rounded-xl bg-white shadow-lg">
+              <h3 className="text-lg font-semibold mb-2 text-blue-600">Resource Management</h3>
+              <p className="text-black">Comprehensive resource tracking and allocation tools</p>
             </div>
           </motion.div>
         </motion.main>

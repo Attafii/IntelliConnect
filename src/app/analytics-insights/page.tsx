@@ -1,209 +1,16 @@
 'use client';
 
-<<<<<<< HEAD
-import { useState } from 'react';
-import { motion } from 'framer-motion';
-import DocumentAnalyzer from '../components/DocumentAnalyzer';
-import { 
-  DocumentTextIcon, 
-  ChartBarIcon, 
-  CpuChipIcon,
-  LightBulbIcon,
-  ArrowUpTrayIcon,
-  SparklesIcon
-} from '@heroicons/react/24/outline';
-
-export default function AnalyticsInsightsPage() {
-  const [selectedFeature, setSelectedFeature] = useState<string | null>(null);
-
-  const features = [
-    {
-      id: 'pdf-analysis',
-      title: 'PDF Document Analysis',
-      description: 'Upload PDF documents and get intelligent insights using AI-powered analysis',
-      icon: DocumentTextIcon,
-      color: 'from-blue-500 to-purple-600',
-      capabilities: [
-        'Extract and analyze text content',
-        'Answer specific questions about documents',
-        'Generate summaries and key insights',
-        'Identify important topics and themes'
-      ]
-    },
-    {
-      id: 'csv-analytics',
-      title: 'CSV Data Analytics',
-      description: 'Upload CSV files and get comprehensive data analysis and visualizations',
-      icon: ChartBarIcon,
-      color: 'from-green-500 to-blue-600',
-      capabilities: [
-        'Parse and analyze data structures',
-        'Generate statistical insights',
-        'Identify trends and patterns',
-        'Answer questions about your data'
-      ]
-    },
-    {
-      id: 'ai-insights',
-      title: 'AI-Powered Insights',
-      description: 'Leverage advanced AI to generate actionable business intelligence',
-      icon: CpuChipIcon,
-      color: 'from-purple-500 to-pink-600',
-      capabilities: [
-        'Context-aware analysis',
-        'Multi-format document support',
-        'Interactive Q&A capabilities',
-        'Automated insight generation'
-      ]
-    }
-  ];
-
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 p-6">
-      <div className="max-w-7xl mx-auto">
-        {/* Header */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="text-center mb-12"
-        >
-          <div className="flex items-center justify-center mb-4">
-            <LightBulbIcon className="h-12 w-12 text-blue-600 mr-3" />
-            <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-              Analytics & Insights
-            </h1>
-          </div>
-          <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            Transform your documents into actionable insights with AI-powered analysis. 
-            Upload PDFs or CSV files and get intelligent answers to your questions.
-          </p>
-        </motion.div>
-
-        {selectedFeature ? (
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            className="mb-8"
-          >
-            <button
-              onClick={() => setSelectedFeature(null)}
-              className="mb-6 flex items-center text-blue-600 hover:text-blue-800 transition-colors duration-200"
-            >
-              <ArrowUpTrayIcon className="h-5 w-5 mr-2 rotate-180" />
-              Back to Features
-            </button>
-            <DocumentAnalyzer />
-          </motion.div>
-        ) : (
-          <>
-            {/* Feature Cards */}
-            <div className="grid md:grid-cols-3 gap-8 mb-12">
-              {features.map((feature, index) => (
-                <motion.div
-                  key={feature.id}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: index * 0.1 }}
-                  className="group cursor-pointer"
-                  onClick={() => setSelectedFeature(feature.id)}
-                >
-                  <div className="relative overflow-hidden rounded-2xl bg-white/70 backdrop-blur-sm border border-white/20 shadow-xl hover:shadow-2xl transition-all duration-300 h-full">
-                    <div className={`absolute inset-0 bg-gradient-to-br ${feature.color} opacity-0 group-hover:opacity-5 transition-opacity duration-300`} />
-                    
-                    <div className="p-8">
-                      <div className={`inline-flex p-3 rounded-xl bg-gradient-to-br ${feature.color} text-white mb-6 group-hover:scale-110 transition-transform duration-300`}>
-                        <feature.icon className="h-8 w-8" />
-                      </div>
-                      
-                      <h3 className="text-2xl font-bold text-gray-900 mb-4 group-hover:text-blue-700 transition-colors duration-300">
-                        {feature.title}
-                      </h3>
-                      
-                      <p className="text-gray-600 mb-6 leading-relaxed">
-                        {feature.description}
-                      </p>
-                      
-                      <div className="space-y-3">
-                        {feature.capabilities.map((capability, idx) => (
-                          <div key={idx} className="flex items-center text-sm text-gray-500">
-                            <SparklesIcon className="h-4 w-4 mr-3 text-blue-500" />
-                            {capability}
-                          </div>
-                        ))}
-                      </div>
-                      
-                      <div className="mt-6 pt-6 border-t border-gray-100">
-                        <div className="flex items-center text-blue-600 font-medium group-hover:text-blue-700 transition-colors duration-300">
-                          <span>Try it now</span>
-                          <ArrowUpTrayIcon className="h-5 w-5 ml-2 group-hover:translate-x-1 transition-transform duration-300" />
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </motion.div>
-              ))}
-            </div>
-
-            {/* Quick Start Section */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.4 }}
-              className="bg-white/50 backdrop-blur-sm rounded-2xl border border-white/20 shadow-lg p-8"
-            >
-              <h2 className="text-2xl font-bold text-gray-900 mb-6 flex items-center">
-                <LightBulbIcon className="h-6 w-6 mr-3 text-yellow-500" />
-                How It Works
-              </h2>
-              
-              <div className="grid md:grid-cols-3 gap-8">
-                <div className="text-center">
-                  <div className="inline-flex items-center justify-center w-12 h-12 bg-blue-100 rounded-full mb-4">
-                    <ArrowUpTrayIcon className="h-6 w-6 text-blue-600" />
-                  </div>
-                  <h3 className="font-semibold text-gray-900 mb-2">1. Upload Your Document</h3>
-                  <p className="text-gray-600 text-sm">
-                    Simply drag and drop your PDF or CSV file, or click to browse and select
-                  </p>
-                </div>
-                
-                <div className="text-center">
-                  <div className="inline-flex items-center justify-center w-12 h-12 bg-green-100 rounded-full mb-4">
-                    <CpuChipIcon className="h-6 w-6 text-green-600" />
-                  </div>
-                  <h3 className="font-semibold text-gray-900 mb-2">2. Ask Questions</h3>
-                  <p className="text-gray-600 text-sm">
-                    Type your questions about the document content or request specific analysis
-                  </p>
-                </div>
-                
-                <div className="text-center">
-                  <div className="inline-flex items-center justify-center w-12 h-12 bg-purple-100 rounded-full mb-4">
-                    <SparklesIcon className="h-6 w-6 text-purple-600" />
-                  </div>
-                  <h3 className="font-semibold text-gray-900 mb-2">3. Get AI Insights</h3>
-                  <p className="text-gray-600 text-sm">
-                    Receive intelligent analysis, summaries, and answers powered by advanced AI
-                  </p>
-                </div>
-              </div>
-            </motion.div>
-          </>
-        )}
-      </div>
-    </div>
-  );
-}
-=======
 import { useState, useCallback } from 'react';
 import RouteTransition from '../components/RouteTransition';
+import FileTypeModal from '../components/FileTypeModal';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
-  ChartBarIcon, ChartPieIcon, ArrowTrendingUpIcon, CursorArrowRaysIcon,
+  ChartBarIcon, CursorArrowRaysIcon,
   BoltIcon, SparklesIcon, PresentationChartLineIcon, RocketLaunchIcon,
-  DocumentArrowUpIcon, ArrowPathIcon
+  DocumentArrowUpIcon, ArrowPathIcon, DocumentTextIcon, TableCellsIcon,
+  DocumentChartBarIcon, PresentationChartBarIcon
 } from '@heroicons/react/24/outline';
-import { LineChart, Line, AreaChart, Area, BarChart, Bar, PieChart, Pie, Cell,
+import { AreaChart, Area, BarChart, Bar, PieChart, Pie, Cell,
          XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
 
 // Sample data for insights
@@ -262,72 +69,30 @@ const marketSegmentation = [
 
 const COLORS = ['#3b82f6', '#10b981', '#8b5cf6', '#f59e0b'];
 
+interface AnalysisResults {
+  summary?: {
+    projectName?: string;
+    timeline?: string;
+    milestones?: string[];
+  };
+  insights?: Array<{
+    title: string;
+    description: string;
+    type: string;
+  }>;
+}
+
 const AnalyticsInsightsPage = () => {
   const [selectedInsight, setSelectedInsight] = useState<string | null>(null);
   const [timeframe, setTimeframe] = useState('month');
-  const [isAnalyzing, setIsAnalyzing] = useState(false);
-  const [analysisResults, setAnalysisResults] = useState<any>(null);
-  const [dragActive, setDragActive] = useState(false);
+  const [activeModal, setActiveModal] = useState<'pdf' | 'csv' | 'excel' | 'powerpoint' | null>(null);
 
-  const handleDrag = useCallback((e: React.DragEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    if (e.type === 'dragenter' || e.type === 'dragover') {
-      setDragActive(true);
-    } else if (e.type === 'dragleave') {
-      setDragActive(false);
-    }
-  }, []);
-
-  const handleDrop = useCallback(async (e: React.DragEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setDragActive(false);
-
-    const files = Array.from(e.dataTransfer.files);
-    if (files.length > 0) {
-      await handleFileAnalysis(files[0]);
-    }
-  }, []);
-
-  const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = e.target.files;
-    if (files && files.length > 0) {
-      await handleFileAnalysis(files[0]);
-    }
+  const openModal = (fileType: 'pdf' | 'csv' | 'excel' | 'powerpoint') => {
+    setActiveModal(fileType);
   };
 
-  const handleFileAnalysis = async (file: File) => {
-    if (!file || (!file.name.endsWith('.csv') && !file.name.endsWith('.pdf'))) {
-      alert('Please upload a CSV or PDF file');
-      return;
-    }
-
-    setIsAnalyzing(true);
-    setAnalysisResults(null);
-
-    try {
-      const formData = new FormData();
-      formData.append('file', file);
-      formData.append('type', file.name.endsWith('.csv') ? 'csv' : 'pdf');
-
-      const response = await fetch('/api/analysis/upload', {
-        method: 'POST',
-        body: formData,
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to analyze file');
-      }
-
-      const results = await response.json();
-      setAnalysisResults(results);
-    } catch (error) {
-      console.error('Error analyzing file:', error);
-      alert('Error analyzing file. Please try again.');
-    } finally {
-      setIsAnalyzing(false);
-    }
+  const closeModal = () => {
+    setActiveModal(null);
   };
 
   return (
@@ -351,132 +116,226 @@ const AnalyticsInsightsPage = () => {
           <p className="text-lg sm:text-xl text-gray-700 max-w-3xl">
             Advanced analytics and AI-powered insights to drive informed business decisions.
           </p>
-        </motion.header>
-
-        {/* File Analysis Section */}
+        </motion.header>        {/* Document Analytics Hub */}
         <motion.div
-          className="mb-8"
+          className="mb-12"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.2 }}
         >
-          <div className="bg-white/80 backdrop-blur-lg rounded-xl shadow-lg p-6">
-            <div className="flex items-center gap-3 mb-6">
-              <DocumentArrowUpIcon className="h-8 w-8 text-blue-600" />
-              <h2 className="text-2xl font-semibold text-gray-800">
-                File Analysis & Predictions
-              </h2>
-            </div>
-
-            <div
-              className={`border-2 border-dashed rounded-lg p-8 text-center transition-all
-                ${dragActive ? 'border-blue-500 bg-blue-50' : 'border-gray-300'}
-                ${isAnalyzing ? 'opacity-50' : ''}`}
-              onDragEnter={handleDrag}
-              onDragLeave={handleDrag}
-              onDragOver={handleDrag}
-              onDrop={handleDrop}
-            >
-              <input
-                type="file"
-                accept=".csv,.pdf"
-                onChange={handleFileSelect}
-                className="hidden"
-                id="file-upload"
-                disabled={isAnalyzing}
-              />
-              
-              <label
-                htmlFor="file-upload"
-                className="flex flex-col items-center gap-4 cursor-pointer"
-              >
-                {isAnalyzing ? (
-                  <>
-                    <ArrowPathIcon className="h-12 w-12 text-blue-500 animate-spin" />
-                    <p className="text-lg text-gray-600">Analyzing file...</p>
-                  </>
-                ) : (
-                  <>
-                    <DocumentArrowUpIcon className="h-12 w-12 text-gray-400" />
-                    <div>
-                      <p className="text-lg font-medium text-gray-700">
-                        Drag and drop your file here, or click to select
-                      </p>
-                      <p className="text-sm text-gray-500 mt-2">
-                        Support for CSV and PDF files
-                      </p>
-                    </div>
-                  </>
-                )}
-              </label>
-            </div>
-
-            {/* Analysis Results */}
-            <AnimatePresence mode="wait">
-              {analysisResults && (
-                <motion.div
-                  initial={{ opacity: 0, height: 0 }}
-                  animate={{ opacity: 1, height: 'auto' }}
-                  exit={{ opacity: 0, height: 0 }}
-                  className="mt-8"
-                >
-                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                    {/* File Summary */}
-                    <div className="bg-white/90 rounded-lg shadow p-6">
-                      <h3 className="text-xl font-semibold text-gray-800 mb-4">
-                        File Summary
-                      </h3>
-                      <div className="space-y-4">
-                        {analysisResults.summary?.projectName && (
-                          <div>
-                            <p className="text-sm font-medium text-gray-500">Project</p>
-                            <p className="text-base text-gray-900">{analysisResults.summary.projectName}</p>
-                          </div>
-                        )}
-                        {analysisResults.summary?.timeline && (
-                          <div>
-                            <p className="text-sm font-medium text-gray-500">Timeline</p>
-                            <p className="text-base text-gray-900">{analysisResults.summary.timeline}</p>
-                          </div>
-                        )}
-                        {analysisResults.summary?.milestones && (
-                          <div>
-                            <p className="text-sm font-medium text-gray-500">Key Milestones</p>
-                            <ul className="list-disc list-inside text-base text-gray-900">
-                              {analysisResults.summary.milestones.map((milestone: string, index: number) => (
-                                <li key={index}>{milestone}</li>
-                              ))}
-                            </ul>
-                          </div>
-                        )}
-                      </div>
-                    </div>
-
-                    {/* Predictions & Insights */}
-                    <div className="bg-white/90 rounded-lg shadow p-6">
-                      <h3 className="text-xl font-semibold text-gray-800 mb-4">
-                        Predictions & Insights
-                      </h3>
-                      <div className="space-y-4">
-                        {analysisResults.insights?.map((insight: any, index: number) => (
-                          <div
-                            key={index}
-                            className={`p-4 rounded-lg ${
-                              insight.type === 'opportunity' 
-                                ? 'bg-green-50 border border-green-200'
-                                : 'bg-blue-50 border border-blue-200'
-                            }`}
-                          >
-                            <h4 className="font-medium text-gray-900">{insight.title}</h4>
-                            <p className="text-sm text-gray-600 mt-1">{insight.description}</p>
-                          </div>
-                        ))}
-                      </div>
+          <div className="relative overflow-hidden bg-gradient-to-br from-white/95 via-blue-50/90 to-purple-50/90 backdrop-blur-2xl rounded-3xl shadow-2xl border border-white/50">
+            {/* Animated Background Elements */}
+            <div className="absolute top-0 right-0 w-96 h-96 bg-gradient-to-bl from-purple-400/10 via-blue-400/10 to-transparent rounded-full -translate-y-48 translate-x-48 animate-pulse-slow"></div>
+            <div className="absolute bottom-0 left-0 w-80 h-80 bg-gradient-to-tr from-blue-400/10 via-purple-400/10 to-transparent rounded-full translate-y-40 -translate-x-40 animate-pulse-slower"></div>
+            
+            <div className="relative z-10 p-8 md:p-12">
+              <div className="text-center mb-12">
+                <div className="flex items-center justify-center gap-4 mb-6">
+                  <div className="relative">
+                    <div className="absolute inset-0 bg-gradient-to-r from-purple-600 to-blue-600 rounded-2xl blur-xl opacity-30 animate-pulse"></div>
+                    <div className="relative p-4 bg-gradient-to-br from-purple-600 to-blue-600 rounded-2xl text-white shadow-xl">
+                      <DocumentArrowUpIcon className="h-12 w-12" />
                     </div>
                   </div>
-                </motion.div>
-              )}
-            </AnimatePresence>
+                </div>
+                <h2 className="text-4xl md:text-5xl font-bold text-gray-800 mb-4 bg-gradient-to-r from-purple-600 via-blue-600 to-cyan-600 bg-clip-text text-transparent">
+                  Document Analytics Hub
+                </h2>
+                <p className="text-xl text-gray-600 max-w-4xl mx-auto leading-relaxed">
+                  Choose your document type and unlock powerful AI-driven insights. 
+                  Extract trends, patterns, and actionable recommendations from your data.
+                </p>
+              </div>
+              
+              {/* Clickable Feature Cards */}
+              <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
+                {/* PDF Analytics Card */}
+                <motion.button
+                  className="group relative overflow-hidden bg-gradient-to-br from-red-50/90 to-orange-50/90 backdrop-blur-lg rounded-2xl shadow-xl border border-red-100/50 hover:shadow-2xl transition-all duration-300 hover:scale-[1.02] p-6 text-left"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.6, delay: 0.3 }}
+                  onClick={() => openModal('pdf')}
+                >
+                  <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-bl from-red-400/20 to-transparent rounded-full -translate-y-10 translate-x-10"></div>
+                  
+                  <div className="relative">
+                    <div className="flex items-center gap-3 mb-4">
+                      <div className="p-3 bg-red-100 rounded-xl group-hover:bg-red-200 transition-colors">
+                        <DocumentTextIcon className="h-6 w-6 text-red-600" />
+                      </div>
+                      <div>
+                        <h3 className="text-lg font-bold text-gray-800">PDF Analysis</h3>
+                        <p className="text-sm text-gray-600">Extract insights from documents</p>
+                      </div>
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <div className="flex items-center gap-2 text-xs text-gray-700">
+                        <div className="w-1.5 h-1.5 bg-red-400 rounded-full"></div>
+                        <span>Advanced text extraction</span>
+                      </div>
+                      <div className="flex items-center gap-2 text-xs text-gray-700">
+                        <div className="w-1.5 h-1.5 bg-red-400 rounded-full"></div>
+                        <span>Content summarization</span>
+                      </div>
+                      <div className="flex items-center gap-2 text-xs text-gray-700">
+                        <div className="w-1.5 h-1.5 bg-red-400 rounded-full"></div>
+                        <span>Q&A capabilities</span>
+                      </div>
+                    </div>
+                    
+                    <div className="mt-4 text-xs text-red-600 font-medium group-hover:text-red-700">
+                      Click to analyze PDF →
+                    </div>
+                  </div>
+                </motion.button>
+
+                {/* CSV Analytics Card */}
+                <motion.button
+                  className="group relative overflow-hidden bg-gradient-to-br from-green-50/90 to-emerald-50/90 backdrop-blur-lg rounded-2xl shadow-xl border border-green-100/50 hover:shadow-2xl transition-all duration-300 hover:scale-[1.02] p-6 text-left"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.6, delay: 0.4 }}
+                  onClick={() => openModal('csv')}
+                >
+                  <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-bl from-green-400/20 to-transparent rounded-full -translate-y-10 translate-x-10"></div>
+                  
+                  <div className="relative">
+                    <div className="flex items-center gap-3 mb-4">
+                      <div className="p-3 bg-green-100 rounded-xl group-hover:bg-green-200 transition-colors">
+                        <TableCellsIcon className="h-6 w-6 text-green-600" />
+                      </div>
+                      <div>
+                        <h3 className="text-lg font-bold text-gray-800">CSV Analysis</h3>
+                        <p className="text-sm text-gray-600">Parse structured data</p>
+                      </div>
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <div className="flex items-center gap-2 text-xs text-gray-700">
+                        <div className="w-1.5 h-1.5 bg-green-400 rounded-full"></div>
+                        <span>Data pattern recognition</span>
+                      </div>
+                      <div className="flex items-center gap-2 text-xs text-gray-700">
+                        <div className="w-1.5 h-1.5 bg-green-400 rounded-full"></div>
+                        <span>Statistical analysis</span>
+                      </div>
+                      <div className="flex items-center gap-2 text-xs text-gray-700">
+                        <div className="w-1.5 h-1.5 bg-green-400 rounded-full"></div>
+                        <span>Trend identification</span>
+                      </div>
+                    </div>
+                    
+                    <div className="mt-4 text-xs text-green-600 font-medium group-hover:text-green-700">
+                      Click to analyze CSV →
+                    </div>
+                  </div>
+                </motion.button>
+
+                {/* Excel Analytics Card */}
+                <motion.button
+                  className="group relative overflow-hidden bg-gradient-to-br from-blue-50/90 to-cyan-50/90 backdrop-blur-lg rounded-2xl shadow-xl border border-blue-100/50 hover:shadow-2xl transition-all duration-300 hover:scale-[1.02] p-6 text-left"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.6, delay: 0.5 }}
+                  onClick={() => openModal('excel')}
+                >
+                  <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-bl from-blue-400/20 to-transparent rounded-full -translate-y-10 translate-x-10"></div>
+                  
+                  <div className="relative">
+                    <div className="flex items-center gap-3 mb-4">
+                      <div className="p-3 bg-blue-100 rounded-xl group-hover:bg-blue-200 transition-colors">
+                        <DocumentChartBarIcon className="h-6 w-6 text-blue-600" />
+                      </div>
+                      <div>
+                        <h3 className="text-lg font-bold text-gray-800">Excel Analysis</h3>
+                        <p className="text-sm text-gray-600">Process spreadsheets</p>
+                      </div>
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <div className="flex items-center gap-2 text-xs text-gray-700">
+                        <div className="w-1.5 h-1.5 bg-blue-400 rounded-full"></div>
+                        <span>Multi-sheet processing</span>
+                      </div>
+                      <div className="flex items-center gap-2 text-xs text-gray-700">
+                        <div className="w-1.5 h-1.5 bg-blue-400 rounded-full"></div>
+                        <span>Formula analysis</span>
+                      </div>
+                      <div className="flex items-center gap-2 text-xs text-gray-700">
+                        <div className="w-1.5 h-1.5 bg-blue-400 rounded-full"></div>
+                        <span>Financial calculations</span>
+                      </div>
+                    </div>
+                    
+                    <div className="mt-4 text-xs text-blue-600 font-medium group-hover:text-blue-700">
+                      Click to analyze Excel →
+                    </div>
+                  </div>
+                </motion.button>
+
+                {/* PowerPoint Analytics Card */}
+                <motion.button
+                  className="group relative overflow-hidden bg-gradient-to-br from-purple-50/90 to-indigo-50/90 backdrop-blur-lg rounded-2xl shadow-xl border border-purple-100/50 hover:shadow-2xl transition-all duration-300 hover:scale-[1.02] p-6 text-left"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.6, delay: 0.6 }}
+                  onClick={() => openModal('powerpoint')}
+                >
+                  <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-bl from-purple-400/20 to-transparent rounded-full -translate-y-10 translate-x-10"></div>
+                  
+                  <div className="relative">
+                    <div className="flex items-center gap-3 mb-4">
+                      <div className="p-3 bg-purple-100 rounded-xl group-hover:bg-purple-200 transition-colors">
+                        <PresentationChartBarIcon className="h-6 w-6 text-purple-600" />
+                      </div>
+                      <div>
+                        <h3 className="text-lg font-bold text-gray-800">PowerPoint Analysis</h3>
+                        <p className="text-sm text-gray-600">Extract from presentations</p>
+                      </div>
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <div className="flex items-center gap-2 text-xs text-gray-700">
+                        <div className="w-1.5 h-1.5 bg-purple-400 rounded-full"></div>
+                        <span>Slide content extraction</span>
+                      </div>
+                      <div className="flex items-center gap-2 text-xs text-gray-700">
+                        <div className="w-1.5 h-1.5 bg-purple-400 rounded-full"></div>
+                        <span>Key message identification</span>
+                      </div>
+                      <div className="flex items-center gap-2 text-xs text-gray-700">
+                        <div className="w-1.5 h-1.5 bg-purple-400 rounded-full"></div>
+                        <span>Speaker notes processing</span>
+                      </div>
+                    </div>
+                    
+                    <div className="mt-4 text-xs text-purple-600 font-medium group-hover:text-purple-700">
+                      Click to analyze PowerPoint →
+                    </div>
+                  </div>
+                </motion.button>
+              </div>
+
+              {/* AI Features Banner */}
+              <motion.div
+                className="mt-8 p-6 bg-gradient-to-r from-purple-100/60 to-blue-100/60 backdrop-blur-sm rounded-2xl border border-purple-200/50"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.7 }}
+              >
+                <div className="flex items-center justify-center gap-4 text-center">
+                  <SparklesIcon className="h-8 w-8 text-purple-600" />
+                  <div>
+                    <h4 className="text-lg font-semibold text-gray-800">Powered by AI</h4>
+                    <p className="text-sm text-gray-600">
+                      Advanced language models provide intelligent analysis and actionable insights for all document types
+                    </p>
+                  </div>
+                </div>
+              </motion.div>
+            </div>
           </div>
         </motion.div>
 
@@ -631,12 +490,17 @@ const AnalyticsInsightsPage = () => {
                 <Bar dataKey="satisfaction" fill="#10b981" name="Satisfaction Score" />
               </BarChart>
             </ResponsiveContainer>
-          </div>
-        </motion.div>
-      </div>
+          </div>        </motion.div>
+      </div>      {/* File Type Modal */}
+      {activeModal && (
+        <FileTypeModal
+          isOpen={!!activeModal}
+          onCloseAction={closeModal}
+          fileType={activeModal}
+        />
+      )}
     </RouteTransition>
   );
 };
 
 export default AnalyticsInsightsPage;
->>>>>>> 21c5801628fea5d2514e6c70695173ad684f56e1
