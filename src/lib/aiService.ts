@@ -7,8 +7,8 @@ export interface ChatResponse {
 
 // Generative Engine API Configuration
 const GENERATIVE_API_CONFIG = {
-  API_URL: "https://api.generative.engine.capgemini.com/v2/llm/invoke",
-  API_KEY: "SKVUUlB0g34EyavkST80U7F6uc8iVbEu79XDSViq".trim(),
+  API_URL: process.env.GENERATIVE_API_URL || "https://api.generative.engine.capgemini.com/v2/llm/invoke",
+  API_KEY: process.env.GENERATIVE_API_KEY?.trim() || "",
   TIMEOUT: 25000, // 25 seconds (less than API 29s timeout)
   // Available models based on your documentation
   MODELS: {
@@ -20,6 +20,11 @@ const GENERATIVE_API_CONFIG = {
 };
 
 async function invokeLLM(prompt: string, modelName: string = GENERATIVE_API_CONFIG.MODELS.NOVA_LITE) {
+  // Check if API key is available
+  if (!GENERATIVE_API_CONFIG.API_KEY) {
+    throw new Error('GENERATIVE_API_KEY environment variable is not set');
+  }
+
   // Ensure prompt doesn't exceed reasonable limits (leave room for response)
   const maxPromptLength = 8000;
   const truncatedPrompt = prompt.length > maxPromptLength ? 
