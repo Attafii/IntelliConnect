@@ -8,6 +8,17 @@ import { ArrowTrendingUpIcon, UserGroupIcon, CurrencyDollarIcon, ChatBubbleLeftR
          LightBulbIcon, ShieldCheckIcon, ChartBarIcon, ArrowPathIcon } from '@heroicons/react/24/outline';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 
+// Define interfaces
+interface KPI {
+  id: string;
+  name: string;
+  target: string;
+  actual: string;
+  variance: string;
+  status: 'positive' | 'negative' | 'neutral';
+  numericValue: number;
+}
+
 type KPIName = 'Monthly Active Users (MAU)' | 'Customer Churn Rate' | 'Average Revenue Per User (ARPU)' | 'Net Promoter Score (NPS)' | 'Feature Adoption Rate' | 'System Uptime';
 
 // Mock historical data for each KPI

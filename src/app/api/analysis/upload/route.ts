@@ -3,12 +3,8 @@ import * as pdfjs from 'pdfjs-dist';
 import Papa from 'papaparse';
 import { aiService } from '@/lib/aiService';
 
-// Set up PDF.js worker for server-side usage
-if (typeof globalThis !== 'undefined' && !globalThis.navigator) {
-  // Server-side environment setup for PDF.js
-  const { createCanvas } = require('canvas');
-  globalThis.HTMLCanvasElement = createCanvas().constructor;
-}
+// Note: PDF.js server-side rendering disabled for performance
+// Use alternative PDF processing if needed
 
 export async function POST(request: NextRequest) {
   try {

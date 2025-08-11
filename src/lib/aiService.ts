@@ -1,21 +1,22 @@
 import axios from 'axios';
+import { envConfig, isApiConfigured } from './envConfig';
 
 export interface ChatResponse {
   reply: string;
   suggestions?: string[];
 }
 
-// Generative Engine API Configuration
+// Generative Engine API Configuration using environment variables
 const GENERATIVE_API_CONFIG = {
-  API_URL: "https://api.generative.engine.capgemini.com/v2/llm/invoke",
-  API_KEY: "SKVUUlB0g34EyavkST80U7F6uc8iVbEu79XDSViq".trim(),
-  TIMEOUT: 25000, // 25 seconds (less than API 29s timeout)
+  API_URL: envConfig.generativeApiUrl,
+  API_KEY: envConfig.generativeApiKey,
+  TIMEOUT: envConfig.apiTimeout,
   // Available models based on your documentation
   MODELS: {
-    CLAUDE_SONNET: "us.anthropic.claude-3-7-sonnet-20250219-v1:0", // Best for RAG applications
-    NOVA_LITE: "amazon.nova-lite-v1:0", // Good for standard applications
-    OPENAI_GPT4: "openai.gpt-4",
-    OPENAI_GPT35: "openai.gpt-3.5-turbo"
+    CLAUDE_SONNET: envConfig.claudeSonnetModel,
+    NOVA_LITE: envConfig.novaLiteModel,
+    OPENAI_GPT4: envConfig.openaiGpt4Model,
+    OPENAI_GPT35: envConfig.openaiGpt35Model
   }
 };
 
@@ -38,10 +39,10 @@ async function invokeLLM(prompt: string, modelName: string = GENERATIVE_API_CONF
                modelName.includes("amazon") ? "bedrock" : "azure",
       sessionId: `intelliconnect-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
       modelKwargs: {
-        maxTokens: 1500,
-        temperature: 0.7,
+        maxTokens: envConfig.maxTokens,
+        temperature: envConfig.temperature,
         streaming: false,
-        topP: 0.9
+        topP: envConfig.topP
       }
     }
   };
@@ -55,7 +56,7 @@ async function invokeLLM(prompt: string, modelName: string = GENERATIVE_API_CONF
         'x-api-key': GENERATIVE_API_CONFIG.API_KEY,
         'Content-Type': 'application/json',
         'Accept': 'application/json',
-        'User-Agent': 'IntelliConnect/1.0'
+        'User-Agent': `${envConfig.appName}/${envConfig.appVersion}`
       },
       timeout: GENERATIVE_API_CONFIG.TIMEOUT
     });
@@ -99,6 +100,12 @@ async function invokeLLM(prompt: string, modelName: string = GENERATIVE_API_CONF
 export const aiService = {
   async sendChatMessage(message: string, context?: string): Promise<ChatResponse> {
     try {
+      // Check if API is properly configured
+      if (!isApiConfigured()) {
+        console.warn('⚠️ API not configured properly, using fallback');
+        return generateMockAnalysis(message, context);
+      }
+
       console.log('🤖 AI Service: Starting document analysis...');
       console.log('📊 Context length:', context?.length || 0);
       console.log('❓ Question:', message);

@@ -1,23 +1,88 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# IntelliConnect Dashboard
 
-## IntelliConnect Dashboard
+IntelliConnect is a modern, comprehensive project management dashboard built with cutting-edge web technologies. It provides a sophisticated interface for managing projects, tracking financials, monitoring resources, and gaining intelligent insights through AI-powered analytics.
 
-IntelliConnect is a modern project management dashboard built with Next.js, Tailwind CSS, and Framer Motion. It features a glassmorphism UI, smooth animations, and provides a comprehensive overview of project statuses, financials, resources, and more.
+## 🚀 Key Features
 
-### Features
+### 🎨 **Modern UI & Design**
+- **Glassmorphism Interface**: Beautiful glass-morphism design with blur effects
+- **Blue-to-White Gradient**: Elegant gradient background for modern aesthetics
+- **Smooth Animations**: Framer Motion powered animations and transitions
+- **3D Elements**: Interactive Spline 3D models and custom geometric shapes
+- **Responsive Design**: Fully responsive across all device sizes
 
-*   **Project Overview**: Filterable and role-based grid view of projects.
-*   **Milestone Timeline**: Horizontal scrollable timeline of project milestones.
-*   **KPI Comparison**: Sortable table for Key Performance Indicators.
-*   **Action Item List**: Animated list of tasks with status indicators.
-*   **Predictions Panel**: Charts for CM trend, resource shortages, and forecast confidence.
-*   **📁 Project Intelligence Agent**: Upload project documents (.csv, .pdf) for automated summary, insights, and Q&A.
-*   **Mock API Backend**: Serves data from JSON files for easy development and testing.
-*   **Theming**: Styled with Capgemini's color palette.
+### 🧭 **Navigation & Layout**
+- **Animated Navbar**: Fixed top navigation with slide-down animations and hover effects
+- **Smart Sidebar**: Collapsible sidebar with gradient text and smooth transitions
+- **Role-Based Interface**: Dynamic content based on user roles and permissions
+- **Route Transitions**: Smooth page transitions between different sections
 
-## Getting Started
+### 📊 **Dashboard Modules**
+- **Project Overview**: Interactive grid view with filtering and status tracking
+- **Financial Analytics**: Budget tracking, cost analysis, and financial forecasting
+- **KPI Dashboard**: Real-time key performance indicators with comparison tables
+- **Milestone Timeline**: Visual project timeline with progress tracking
+- **Resource Management**: Team allocation and resource utilization monitoring
+- **Risk Assessment**: Risk identification and mitigation tracking
 
-First, run the development server:
+### 🤖 **AI-Powered Features**
+- **Chatbot Assistant**: Multilingual AI assistant (English, French, Tunisian Arabic)
+- **Global Search**: Intelligent search across all data and pages
+- **Document Intelligence**: AI-powered document analysis and insights
+- **Predictive Analytics**: Forecast trends and identify potential issues
+
+### 🔔 **Interactive Components**
+- **Notification Center**: Real-time notifications with filtering and management
+- **Toast System**: Elegant notification toasts for user feedback
+- **Modal System**: Advanced modal dialogs for file uploads and settings
+- **Loading States**: Beautiful shimmer effects and loading animations
+
+## 🛠️ Tech Stack
+
+### **Frontend**
+- **Next.js 14**: React framework with App Router and Server Components
+- **TypeScript**: Type-safe development for better code quality
+- **Tailwind CSS**: Utility-first CSS framework for rapid styling
+- **Framer Motion**: Advanced animations and micro-interactions
+- **Spline**: 3D models and interactive graphics
+
+### **UI Components**
+- **Radix UI**: Accessible, unstyled UI primitives
+- **Lucide Icons**: Beautiful, customizable SVG icons
+- **Heroicons**: Additional icon set for enhanced UI
+- **React Three Fiber**: 3D graphics and animations
+
+### **Development Tools**
+- **ESLint**: Code linting and quality assurance
+- **PostCSS**: CSS processing and optimization
+- **Canvas**: Advanced graphics and image processing
+
+## 🚀 Quick Start
+
+### **Prerequisites**
+- Node.js 18+ installed
+- npm, yarn, pnpm, or bun package manager
+
+### **Installation**
+
+1. **Clone the repository:**
+```bash
+git clone https://github.com/Attafii/IntelliConnect.git
+cd IntelliConnect
+```
+
+2. **Install dependencies:**
+```bash
+npm install
+# or
+yarn install
+# or
+pnpm install
+# or
+bun install
+```
+
+3. **Run the development server:**
 
 ```bash
 npm run dev
@@ -29,155 +94,182 @@ pnpm dev
 bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+4. **Open your browser:**
+Navigate to [http://localhost:3000](http://localhost:3000) to see the application.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+5. **Start developing:**
+Edit `src/app/page.tsx` or any component file. The application will hot-reload automatically.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
-
-## Project Structure
-
-Key directories and files:
+## 📁 Project Structure
 
 ```
 IntelliConnect/
-├── public/                     # Static assets (images, icons)
-│   ├── favicon.svg             # Site icon (replace with your own)
-│   └── ...
-├── src/
-│   ├── app/
-│   │   ├── api/                # Next.js API Routes
-│   │   │   ├── projects/route.ts
-│   │   │   ├── financials/route.ts
-│   │   │   └── resources/route.ts
-│   │   ├── components/         # Reusable UI components for specific pages or layouts
-│   │   ├── data/               # Mock JSON data files
-│   │   │   ├── projects.json
-│   │   │   ├── financials.json
-│   │   │   └── resources.json
-│   │   ├── overview/           # Overview page components and logic
-│   │   ├── intelligence/       # Project Intelligence Agent page
-│   │   ├── milestones/         # Milestones page
-│   │   ├── kpis/               # KPIs page
-│   │   ├── financials/         # Financials page (placeholder)
-│   │   ├── resources/          # Resources page (placeholder)
-│   │   ├── risks/              # Risks page (placeholder)
-│   │   ├── globals.css         # Global styles and Tailwind directives
-│   │   └── layout.tsx          # Root layout
-│   ├── components/             # Shared UI components (e.g., Shadcn UI)
-│   │   └── ui/
-│   └── lib/                    # Utility functions
-├── tailwind.config.ts          # Tailwind CSS configuration
-└── next.config.ts              # Next.js configuration
+├── 📁 public/                  # Static assets
+│   ├── 🖼️ intlogo.png         # Application logo
+│   ├── 🖼️ Navlogo.png         # Navigation logo
+│   └── 🎨 *.svg               # Vector icons and assets
+├── 📁 src/
+│   ├── 📁 app/                 # Next.js App Router
+│   │   ├── 📁 api/             # API Routes
+│   │   │   ├── 📊 analysis/    # Document analysis endpoints
+│   │   │   ├── 💰 financials/  # Financial data API
+│   │   │   ├── 📋 projects/    # Project management API
+│   │   │   └── 👥 resources/   # Resource management API
+│   │   ├── 📁 components/      # Page-specific components
+│   │   │   ├── 🤖 ChatbotAssistant.tsx
+│   │   │   ├── 🔍 GlobalSearch.tsx
+│   │   │   ├── 🔔 NotificationCenter.tsx
+│   │   │   ├── 🏠 SimpleLayout.tsx
+│   │   │   ├── 🧭 SimpleNavbar.tsx
+│   │   │   ├── 📊 SplineModels.tsx
+│   │   │   └── 🎨 Modern3DShape.tsx
+│   │   ├── 📁 data/            # Mock JSON data
+│   │   │   ├── 📊 projects.json
+│   │   │   ├── 💰 financials.json
+│   │   │   └── 👥 resources.json
+│   │   ├── 📁 financials/      # Financial dashboard
+│   │   ├── 📁 intelligence/    # AI-powered insights
+│   │   ├── 📁 kpis/           # KPI dashboard
+│   │   ├── 📁 milestones/     # Timeline management
+│   │   ├── 📁 overview/       # Project overview
+│   │   ├── 📁 resources/      # Resource management
+│   │   ├── 📁 risks/          # Risk assessment
+│   │   ├── 🎨 globals.css     # Global styles & animations
+│   │   └── 📄 layout.tsx      # Root layout component
+│   ├── 📁 components/         # Shared UI components
+│   │   └── 📁 ui/             # Radix UI components
+│   └── 📁 lib/                # Utilities and helpers
+├── ⚙️ next.config.ts          # Next.js configuration
+├── 🎨 tailwind.config.ts      # Tailwind CSS config
+├── 📦 package.json            # Dependencies and scripts
+└── 📖 README.md               # Documentation
 ```
 
-## API Routes
+## 🔗 API Endpoints
 
-The application uses Next.js API routes to serve mock data from JSON files located in `src/app/data/`.
+The application provides RESTful API endpoints for data management:
 
-*   `GET /api/projects`: Returns a list of all projects.
-*   `GET /api/financials`: Returns financial data for projects.
-*   `GET /api/resources`: Returns resource allocation data.
-*   `POST /api/analysis/upload`: Handles project file uploads for the Intelligence Agent.
-*   `POST /api/analysis/chat`: Handles chat messages for the Intelligence Agent.
+### **Core Data APIs**
+- **`GET /api/projects`** - Retrieve all projects with status and metadata
+- **`GET /api/financials`** - Get financial data and budget information
+- **`GET /api/resources`** - Fetch resource allocation and team data
 
-These can be extended or replaced with a real backend integration.
+### **AI & Analytics APIs**
+- **`POST /api/analysis/upload`** - Upload documents for AI analysis
+- **`POST /api/analysis/chat`** - Chat with AI about uploaded documents
 
-## 📁 Project Intelligence Agent
+### **Example API Usage**
 
-The Project Intelligence Agent is a new feature designed to help you quickly understand and interact with your project documents.
+**Get all projects:**
+```bash
+curl http://localhost:3000/api/projects
+```
 
-**Purpose:**
-
-*   Automate the extraction and summarization of key project data.
-*   Provide a quick overview of project status, timelines, resources, budget, and risks.
-*   Allow users to ask natural language questions about the uploaded document.
-
-**Supported File Types:**
-
-*   `.csv` (Comma Separated Values)
-*   `.pdf` (Portable Document Format)
-
-**How to Use:**
-
-1.  Navigate to the **Intelligence** page from the sidebar.
-2.  Use the upload section to select a `.csv` or `.pdf` file from your computer.
-3.  Once uploaded, the system will analyze the file and display:
-    *   An **Intelligence Summary** with key data points (Project Name, Timeline, Tasks, Resources, Budget, Risks).
-    *   A **Predictive Insights Panel** (if data allows) with potential delays or CM risks.
-4.  Use the **Chat Interface** below the summary to ask questions about the content of the uploaded file (e.g., "What are the current risks?", "Summarize the project budget.").
-
-**Note on GenAI Integration:**
-
-The chat functionality currently uses placeholder responses. The backend API route `/api/analysis/chat` is set up, but the actual Generative AI model integration for advanced Q&A is pending future development.
-
-## Site Icon
-
-The site icon (favicon) can be replaced by updating the `favicon.svg` (or `.png`, `.ico`, etc.) file in the `/public` directory. Next.js will automatically pick up a file named `icon.*` or `favicon.*` from the `app` or `public` directory. The previous `src/app/favicon.ico` has been removed to allow the new icon in `/public` to take precedence.
-
-To use the image you provided as the site icon:
-1.  Save the image as `favicon.svg` (recommended for vector) or `favicon.png` in the `public` folder.
-2.  If you use a different name or want to specify multiple icon sizes/types, you can update the `metadata` object in `src/app/layout.tsx`:
-    ```typescript
-    // src/app/layout.tsx
-    export const metadata: Metadata = {
-      title: "IntelliConnect - Modern Dashboard",
-      description: "A modern dashboard with glassmorphism UI and smooth animations",
-      icons: {
-        icon: '/path/to/your/icon.svg', // e.g., '/favicon.svg'
-        // apple: '/apple-icon.png',
-        // other icons...
-      },
-    };
-    ```
-
-## Contributing
-
-Contributions are welcome! Please follow these general guidelines:
-
-1.  **Branching**: Create a new branch for each feature or bug fix (e.g., `feature/new-chart` or `fix/login-bug`).
-2.  **Coding Style**: Follow the existing code style and conventions. Use Prettier and ESLint if configured.
-3.  **Components**: Create reusable components where possible. Place shared UI components in `src/components/ui` and page-specific or layout components in `src/app/components`.
-4.  **Data Fetching**: For new dashboard sections requiring data, create a new JSON file in `src/app/data/` and a corresponding API route in `src/app/api/`.
-5.  **Commits**: Write clear and concise commit messages.
-6.  **Pull Requests**: Submit a pull request to the main branch for review.
-
-### Dependencies for New Components
-
-If you are adding new components that rely on charting libraries or icon sets, please note the following dependencies used in recent additions:
-
-*   **Recharts**: For charts and graphs (e.g., in `PredictionsPanel`). Install with `npm install recharts`.
-*   **Lucide React**: For icons. Install with `npm install lucide-react`.
-
-Ensure these are installed if you are working with or extending components that use them.
-
-## Example: Generic API Call with curl
-
-You can use curl to call any API endpoint. Replace `<API_URL>` and `<DATA>` as needed:
-
+**Generic API call:**
 ```bash
 curl -X POST <API_URL> \
   -H "Content-Type: application/json" \
   -d '{"key": "value"}'
 ```
 
-For GET requests:
+## 🤖 AI Features
 
-```bash
-curl <API_URL>
-```
+### **Chatbot Assistant**
+- **Multilingual Support**: English, French, and Tunisian Arabic
+- **Voice Synthesis**: Text-to-speech capabilities
+- **Smart Suggestions**: Context-aware response suggestions
+- **Animated Interface**: Smooth animations and transitions
+
+### **Global Search**
+- **Universal Search**: Search across projects, financials, resources, and pages
+- **Keyboard Navigation**: Arrow keys and Enter to select
+- **Real-time Results**: Instant search results as you type
+- **Categorized Results**: Results grouped by type and relevance
+
+### **Document Intelligence**
+- **File Support**: PDF and CSV document analysis
+- **AI Summarization**: Automatic extraction of key insights
+- **Interactive Q&A**: Chat with your documents
+- **Predictive Analytics**: Identify potential issues and opportunities
+
+## 🎨 Design System
+
+### **Colors & Themes**
+- **Primary Gradient**: Blue to white gradient background
+- **Glass Morphism**: Translucent elements with backdrop blur
+- **Modern Palette**: Carefully curated color scheme
+- **Dark Mode Ready**: Prepared for future dark theme support
+
+### **Typography**
+- **Geist Font**: Modern, readable typography
+- **Font Weights**: Regular, medium, semibold, and bold variants
+- **Responsive Text**: Scales appropriately across devices
+
+### **Animations**
+- **Page Transitions**: Smooth route transitions
+- **Micro-interactions**: Hover effects and button animations
+- **Loading States**: Elegant shimmer effects
+- **3D Elements**: Interactive geometric shapes and Spline models
+
+## 🚀 Deployment
+
+### **Vercel (Recommended)**
+1. Connect your GitHub repository to Vercel
+2. Configure environment variables if needed
+3. Deploy with automatic CI/CD
+
+### **Other Platforms**
+- **Netlify**: Full Next.js support
+- **Railway**: Easy deployment with Git integration
+- **Docker**: Containerized deployment option
+
+## 🤝 Contributing
+
+We welcome contributions! Here's how to get started:
+
+### **Development Workflow**
+1. **Fork** the repository
+2. **Create** a feature branch: `git checkout -b feature/amazing-feature`
+3. **Commit** changes: `git commit -m 'Add amazing feature'`
+4. **Push** to branch: `git push origin feature/amazing-feature`
+5. **Open** a Pull Request
+
+### **Code Standards**
+- **TypeScript**: All new code should use TypeScript
+- **ESLint**: Follow the existing linting rules
+- **Component Structure**: Use functional components with hooks
+- **Styling**: Prefer Tailwind CSS classes over custom CSS
+
+### **Component Guidelines**
+- **Reusable Components**: Place in `src/components/ui/`
+- **Page Components**: Place in `src/app/components/`
+- **Props Interface**: Always define TypeScript interfaces for props
+- **Documentation**: Add JSDoc comments for complex components
+
+## 📖 Learn More
+
+### **Next.js Resources**
+- [Next.js Documentation](https://nextjs.org/docs) - Learn about Next.js features and API
+- [Learn Next.js](https://nextjs.org/learn) - Interactive Next.js tutorial
+- [Next.js GitHub](https://github.com/vercel/next.js/) - Source code and community
+
+### **Design Resources**
+- [Tailwind CSS](https://tailwindcss.com/) - Utility-first CSS framework
+- [Framer Motion](https://www.framer.com/motion/) - Animation library
+- [Radix UI](https://www.radix-ui.com/) - Accessible component primitives
+- [Lucide Icons](https://lucide.dev/) - Beautiful icon library
+
+## 📄 License
+
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+
+## 🙋‍♂️ Support
+
+If you have any questions or need help:
+- 📧 **Email**: [Contact](mailto:your-email@example.com)
+- 🐛 **Issues**: [GitHub Issues](https://github.com/Attafii/IntelliConnect/issues)
+- 💬 **Discussions**: [GitHub Discussions](https://github.com/Attafii/IntelliConnect/discussions)
+
+---
+
+**Built with ❤️ using Next.js, TypeScript, and Tailwind CSS**

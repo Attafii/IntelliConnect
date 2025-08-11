@@ -1,8 +1,9 @@
 import OpenAI from 'openai';
+import { envConfig } from './envConfig';
 
 export const API_CONFIG = {
-  API_KEY: "SKVUUlB0g34EyavkST80U7F6uc8iVbEu79XDSViq".trim(),
-  BASE_URL: "https://api.generative.engine.capgemini.com/v1"
+  API_KEY: envConfig.generativeApiKey,
+  BASE_URL: envConfig.generativeBaseUrl
 };
 
 export const openai = new OpenAI({

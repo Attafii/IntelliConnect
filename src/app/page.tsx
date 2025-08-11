@@ -3,11 +3,10 @@
 import Image from "next/image";
 import { motion } from "framer-motion";
 import Link from "next/link";
-import BackgroundAnimation from "./components/BackgroundAnimation";
 
 export default function Home() {
-  return (    <div className="relative">
-      <BackgroundAnimation />
+  return (
+    <div className="relative min-h-screen bg-gradient-to-br from-sky-50 via-white to-sky-100">
       <div className="relative min-h-screen flex flex-col items-center justify-center p-8 pb-20 gap-16 sm:p-20">
         <div className="absolute top-4 left-4 z-20">
           <Link href="/" className="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors duration-200 flex items-center gap-2">
