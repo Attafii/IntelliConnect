@@ -6,6 +6,11 @@ export const API_CONFIG = {
   BASE_URL: envConfig.generativeBaseUrl
 };
 
+// Validate API key is available
+if (!API_CONFIG.API_KEY) {
+  console.warn('⚠️ GENERATIVE_API_KEY environment variable is not set');
+}
+
 export const openai = new OpenAI({
   apiKey: API_CONFIG.API_KEY,
   baseURL: API_CONFIG.BASE_URL,

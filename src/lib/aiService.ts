@@ -21,6 +21,11 @@ const GENERATIVE_API_CONFIG = {
 };
 
 async function invokeLLM(prompt: string, modelName: string = GENERATIVE_API_CONFIG.MODELS.NOVA_LITE) {
+  // Check if API key is available
+  if (!GENERATIVE_API_CONFIG.API_KEY) {
+    throw new Error('GENERATIVE_API_KEY environment variable is not set');
+  }
+
   // Ensure prompt doesn't exceed reasonable limits (leave room for response)
   const maxPromptLength = 8000;
   const truncatedPrompt = prompt.length > maxPromptLength ? 
